@@ -1,10 +1,13 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { IoCopyOutline } from "react-icons/io5";
 
 // Also install this npm i --save-dev @types/react-lottie
-import Lottie from "react-lottie";
+import dynamic from "next/dynamic";
 
 import { cn } from "@/lib/utils";
+
+// Dynamically import Lottie to avoid SSR issues
+const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
 
 import { BackgroundGradientAnimation } from "./GradientBg";
 import GridGlobe from "./GridGlobe";
@@ -55,6 +58,11 @@ export const BentoGridItem = ({
   const rightLists = ["Node.js", "Express", "Tailwind CSS"];
 
   const [copied, setCopied] = useState(false);
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   const defaultOptions = {
     loop: copied,
@@ -186,7 +194,9 @@ export const BentoGridItem = ({
                 }`}
               >
                 {/* <img src="/confetti.gif" alt="confetti" /> */}
-                <Lottie options={defaultOptions} height={200} width={400} />
+                {isClient && copied && (
+                  <Lottie options={defaultOptions} height={200} width={400} />
+                )}
               </div>
 
               <MagicButton
