@@ -40,6 +40,11 @@ export const BackgroundGradientAnimation = ({
   const [tgX, setTgX] = useState(0);
   const [tgY, setTgY] = useState(0);
   useEffect(() => {
+    // Check if we're in the browser environment
+    if (typeof document === "undefined") {
+      return;
+    }
+
     document.body.style.setProperty(
       "--gradient-background-start",
       gradientBackgroundStart
@@ -83,6 +88,10 @@ export const BackgroundGradientAnimation = ({
 
   const [isSafari, setIsSafari] = useState(false);
   useEffect(() => {
+    // Check if we're in the browser environment
+    if (typeof navigator === "undefined") {
+      return;
+    }
     setIsSafari(/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
   }, []);
 

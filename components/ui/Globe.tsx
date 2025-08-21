@@ -263,6 +263,11 @@ export function WebGLRendererConfig() {
   const { gl, size } = useThree();
 
   useEffect(() => {
+    // Check if we're in the browser environment
+    if (typeof window === "undefined") {
+      return;
+    }
+
     gl.setPixelRatio(window.devicePixelRatio);
     gl.setSize(size.width, size.height);
     gl.setClearColor(0xffaaff, 0);

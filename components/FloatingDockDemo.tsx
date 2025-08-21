@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { FloatingDock } from "@/components/ui/floating-dock";
 import {
   IconBrandGithub,
@@ -10,6 +10,16 @@ import {
 } from "@tabler/icons-react";
 
 export function FloatingDockDemo() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  // Don't render anything during SSR
+  if (!isClient) {
+    return null;
+  }
   const links = [
     {
       id: 1,
@@ -62,6 +72,11 @@ export function FloatingDockDemo() {
   ];
 
   const handleClick = (href: string, e: React.MouseEvent) => {
+    // Check if we're in the browser environment
+    if (typeof window === "undefined" || typeof document === "undefined") {
+      return;
+    }
+
     if (href === "#") {
       // Home link - scroll to top
       e.preventDefault();
