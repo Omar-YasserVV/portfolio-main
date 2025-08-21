@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 
 import "./globals.css";
@@ -12,6 +12,11 @@ const inter = Inter({
   fallback: ["system-ui", "arial"],
   variable: "--font-inter",
 });
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: "Omar Yasser's Portfolio",
@@ -40,10 +45,6 @@ export const metadata: Metadata = {
   robots: {
     index: true,
     follow: true,
-  },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
   },
 };
 

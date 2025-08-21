@@ -4,7 +4,8 @@ import { withSentryConfig } from "@sentry/nextjs";
 const nextConfig = {
   // Performance optimizations
   experimental: {
-    optimizeCss: true,
+    // Disabling optimizeCss to prevent memory allocation issues
+    // optimizeCss: true,
     optimizePackageImports: [
       "@tabler/icons-react",
       "react-icons",
