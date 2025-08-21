@@ -163,9 +163,15 @@ export const getOptimizedFrameRate = () => {
 };
 
 // Skip frames for smoother animation on low performance devices
-export const shouldSkipFrame = () => {
+export const shouldSkipFrame = (frameCount?: number) => {
   if (!isLowPerformanceDevice()) return false;
   
   // Skip every other frame on low performance devices
-  return Math.random() > 0.5;
+  // If frameCount is provided, use it for more deterministic skipping
+  if (frameCount !== undefined) {
+    return frameCount % 2 === 0; // Deterministic frame skipping when frameCount is provided
+  }
+  
+  // Otherwise use random skipping
+  return Math.random() > 0.5; // Random frame skipping when no frameCount is provided
 };
