@@ -1,18 +1,34 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import { IoCopyOutline } from "react-icons/io5";
-
-// Also install this npm i --save-dev @types/react-lottie
 import dynamic from "next/dynamic";
-
 import { cn } from "@/lib/utils";
 
-// Dynamically import Lottie to avoid SSR issues
-const Lottie = dynamic(() => import("react-lottie"), { ssr: false });
+// Dynamically import heavy components
+const Lottie = dynamic(() => import("react-lottie"), {
+  ssr: false,
+  loading: () => <div className="w-96 h-48 bg-transparent" />,
+});
 
-import { BackgroundGradientAnimation } from "./GradientBg";
-import GridGlobe from "./GridGlobe";
+const BackgroundGradientAnimation = dynamic(
+  () =>
+    import("./GradientBg").then((mod) => ({
+      default: mod.BackgroundGradientAnimation,
+    })),
+  {
+    ssr: false,
+  }
+);
+
+const GridGlobe = dynamic(() => import("./GridGlobe"), {
+  ssr: false,
+  loading: () => <div className="w-full h-64 bg-black-200 rounded-lg" />,
+});
+
+const MagicButton = dynamic(() => import("../MagicButton"), {
+  ssr: false,
+});
+
 import animationData from "@/data/confetti.json";
-import MagicButton from "../MagicButton";
 
 export const BentoGrid = ({
   className,
@@ -64,16 +80,19 @@ export const BentoGridItem = ({
     setIsClient(true);
   }, []);
 
-  const defaultOptions = {
-    loop: copied,
-    autoplay: copied,
-    animationData: animationData,
-    rendererSettings: {
-      preserveAspectRatio: "xMidYMid slice",
-    },
-  };
+  const defaultOptions = useMemo(
+    () => ({
+      loop: copied,
+      autoplay: copied,
+      animationData: animationData,
+      rendererSettings: {
+        preserveAspectRatio: "xMidYMid slice",
+      },
+    }),
+    [copied]
+  );
 
-  const handleCopy = () => {
+  const handleCopy = useCallback(() => {
     // Check if we're in the browser environment
     if (typeof navigator === "undefined") {
       return;
@@ -82,7 +101,7 @@ export const BentoGridItem = ({
     const text = "omar1yasser@outlook.com";
     navigator.clipboard.writeText(text);
     setCopied(true);
-  };
+  }, []);
 
   return (
     <div

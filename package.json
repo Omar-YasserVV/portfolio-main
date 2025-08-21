@@ -7,7 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "deploy": "vercel --prod"
+    "deploy": "vercel --prod",
+    "analyze": "ANALYZE=true npm run build",
+    "build:prod": "NODE_ENV=production npm run build",
+    "lighthouse": "lighthouse http://localhost:3000 --output=json --output-path=./lighthouse-report.json"
   },
   "dependencies": {
     "@react-three/drei": "^9.105.4",
