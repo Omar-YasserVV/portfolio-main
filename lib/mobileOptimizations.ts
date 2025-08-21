@@ -106,15 +106,18 @@ export const getOptimizedElementCount = (defaultCount: number) => {
 };
 
 // Optimize image loading for mobile
-export const getOptimizedImageSize = (defaultSize: number) => {
-  if (typeof window === 'undefined') return defaultSize;
+export const getOptimizedImageSize = (defaultWidth: number, defaultHeight: number = defaultWidth) => {
+  if (typeof window === 'undefined') return { width: defaultWidth, height: defaultHeight };
   
   if (isLowPerformanceDevice()) {
     // Reduce image size for mobile devices
-    return Math.floor(defaultSize * 0.7);
+    return {
+      width: Math.floor(defaultWidth * 0.7),
+      height: Math.floor(defaultHeight * 0.7)
+    };
   }
   
-  return defaultSize;
+  return { width: defaultWidth, height: defaultHeight };
 };
 
 // Optimize CSS transforms for better performance
