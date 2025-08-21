@@ -9,6 +9,7 @@ import {
 } from "framer-motion";
 import { useRef } from "react";
 import { cn } from "@/lib/utils";
+import { isLowPerformanceDevice, shouldSkipFrame } from "@/lib/mobileOptimizations";
 
 export function Button({
   borderRadius = "1.75rem",
@@ -85,11 +86,26 @@ export const MovingBorder = ({
 }) => {
   const pathRef = useRef<any>();
   const progress = useMotionValue<number>(0);
+  const frameCountRef = useRef(0);
+  
+  // Check if we're on a low performance device
+  const isLowPerf = isLowPerformanceDevice();
+  
+  // Adjust duration for low performance devices
+  const optimizedDuration = isLowPerf ? duration * 1.5 : duration;
 
   useAnimationFrame((time) => {
+    // Skip frames on low performance devices to improve performance
+    if (isLowPerf) {
+      frameCountRef.current += 1;
+      if (shouldSkipFrame(frameCountRef.current)) {
+        return;
+      }
+    }
+    
     const length = pathRef.current?.getTotalLength();
     if (length) {
-      const pxPerMillisecond = length / duration;
+      const pxPerMillisecond = length / optimizedDuration;
       progress.set((time * pxPerMillisecond) % length);
     }
   });
@@ -131,6 +147,12 @@ export const MovingBorder = ({
           left: 0,
           display: "inline-block",
           transform,
+          // Apply hardware acceleration
+          willChange: "transform",
+          backfaceVisibility: "hidden",
+          // Reduce visual complexity on low performance devices
+          opacity: isLowPerf ? 0.8 : 1,
+          filter: isLowPerf ? "blur(0.5px)" : "none",
         }}
       >
         {children}

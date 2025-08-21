@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import React, { useMemo, useRef, useCallback } from "react";
 import * as THREE from "three";
+import { isLowPerformanceDevice } from "@/lib/mobileOptimizations";
 
 export const CanvasRevealEffect = ({
   animationSpeed = 0.4,
@@ -23,20 +24,29 @@ export const CanvasRevealEffect = ({
   dotSize?: number;
   showGradient?: boolean;
 }) => {
+  // Check if we're on a low performance device
+  const isLowPerf = isLowPerformanceDevice();
+  
+  // Adjust animation speed and dot size for low performance devices
+  const optimizedAnimationSpeed = isLowPerf ? animationSpeed * 0.6 : animationSpeed;
+  const optimizedDotSize = isLowPerf ? (dotSize ? Math.max(1, dotSize - 1) : 2) : (dotSize ?? 3);
+  
+  // Reduce the number of opacities for low performance devices
+  const optimizedOpacities = isLowPerf 
+    ? [0.3, 0.5, 0.8, 1] 
+    : (opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1]);
   return (
     <div className={cn("h-full relative bg-white w-full", containerClassName)}>
       <div className="h-full w-full">
         <DotMatrix
           colors={colors ?? [[0, 255, 255]]}
-          dotSize={dotSize ?? 3}
-          opacities={
-            opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1]
-          }
+          dotSize={optimizedDotSize}
+          opacities={optimizedOpacities}
           shader={`
-              float animation_speed_factor = ${animationSpeed.toFixed(1)};
-              float intro_offset = distance(u_resolution / 2.0 / u_total_size, st2) * 0.01 + (random(st2) * 0.15);
+              float animation_speed_factor = ${optimizedAnimationSpeed.toFixed(1)};
+              float intro_offset = distance(u_resolution / 2.0 / u_total_size, st2) * ${isLowPerf ? '0.005' : '0.01'} + (random(st2) * ${isLowPerf ? '0.1' : '0.15'});
               opacity *= step(intro_offset, u_time * animation_speed_factor);
-              opacity *= clamp((1.0 - step(intro_offset + 0.1, u_time * animation_speed_factor)) * 1.25, 1.0, 1.25);
+              opacity *= clamp((1.0 - step(intro_offset + ${isLowPerf ? '0.05' : '0.1'}, u_time * animation_speed_factor)) * ${isLowPerf ? '1.1' : '1.25'}, 1.0, ${isLowPerf ? '1.1' : '1.25'});
             `}
           center={["x", "y"]}
         />

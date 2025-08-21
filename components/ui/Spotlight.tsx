@@ -1,5 +1,6 @@
 import { cn } from "@/lib/utils";
 import React from "react";
+import { isLowPerformanceDevice } from "@/lib/mobileOptimizations";
 
 type SpotlightProps = {
   className?: string;
@@ -7,12 +8,21 @@ type SpotlightProps = {
 };
 
 export const Spotlight = ({ className, fill }: SpotlightProps) => {
+  // Check if we're on a low performance device
+  const isLowPerf = isLowPerformanceDevice();
+  
   return (
     <svg
       className={cn(
-        "animate-spotlight pointer-events-none absolute z-[1]  h-[169%] w-[138%] lg:w-[84%] opacity-0",
+        "animate-spotlight pointer-events-none absolute z-[1] h-[169%] w-[138%] lg:w-[84%] opacity-0",
+        // Conditionally apply different classes based on device performance
+        isLowPerf ? "motion-reduce" : "",
         className
       )}
+      style={{
+        // Reduce animation impact on low performance devices
+        animationDuration: isLowPerf ? "8s" : "5s",
+      }}
       xmlns="http://www.w3.org/2000/svg"
       viewBox="0 0 3787 2842"
       fill="none"
@@ -46,7 +56,7 @@ export const Spotlight = ({ className, fill }: SpotlightProps) => {
             result="shape"
           ></feBlend>
           <feGaussianBlur
-            stdDeviation="151"
+            stdDeviation={isLowPerf ? "100" : "151"}
             result="effect1_foregroundBlur_1065_8"
           ></feGaussianBlur>
         </filter>

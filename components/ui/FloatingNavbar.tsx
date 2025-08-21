@@ -8,6 +8,7 @@ import {
 } from "framer-motion";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import { isLowPerformanceDevice } from "@/lib/mobileOptimizations";
 
 export const FloatingNav = ({
   navItems,
@@ -20,14 +21,27 @@ export const FloatingNav = ({
   }[];
   className?: string;
 }) => {
+  // Detect if we're on a low performance device
+  const isLowPerformance = isLowPerformanceDevice();
+  
   const { scrollYProgress } = useScroll();
 
   // set true for the initial state so that nav bar is visible in the hero section
   const [visible, setVisible] = useState(true);
+  
+  // Track last update time to throttle updates on low-performance devices
+  const [lastUpdateTime, setLastUpdateTime] = useState(0);
 
   useMotionValueEvent(scrollYProgress, "change", (current) => {
     // Check if current is not undefined and is a number
     if (typeof current === "number") {
+      // Throttle updates on low performance devices
+      const now = Date.now();
+      if (isLowPerformance && now - lastUpdateTime < 100) {
+        return;
+      }
+      setLastUpdateTime(now);
+      
       let direction = current! - scrollYProgress.getPrevious()!;
 
       if (scrollYProgress.get() < 0.05) {
@@ -55,7 +69,11 @@ export const FloatingNav = ({
           opacity: visible ? 1 : 0,
         }}
         transition={{
-          duration: 0.2,
+          duration: isLowPerformance ? 0.1 : 0.2,
+          // Use more efficient animation settings for low performance devices
+          type: isLowPerformance ? "tween" : "spring",
+          // Reduce animation complexity on mobile
+          bounce: isLowPerformance ? 0 : 0.25
         }}
         className={cn(
           // change rounded-full to rounded-lg

@@ -3,6 +3,7 @@ import React, { useState, useEffect, useRef } from "react";
 
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { isLowPerformanceDevice } from "@/lib/mobileOptimizations";
 
 type Direction = "TOP" | "LEFT" | "BOTTOM" | "RIGHT";
 
@@ -47,14 +48,27 @@ export function HoverBorderGradient({
   const highlight =
     "radial-gradient(75% 181.15942028985506% at 50% 50%, #3275F8 0%, rgba(255, 255, 255, 0) 100%)";
 
+  // Detect if we're on a low performance device
+  const isLowPerf = isLowPerformanceDevice();
+  
   useEffect(() => {
     if (!hovered) {
+      // Use a longer interval on low performance devices
+      const intervalDuration = isLowPerf ? duration * 2000 : duration * 1000;
+      
+      // Skip animation entirely on very low performance devices with touch screens
+      if (isLowPerf && 'ontouchstart' in window && window.innerWidth < 480) {
+        return;
+      }
+      
       const interval = setInterval(() => {
         setDirection((prevState) => rotateDirection(prevState));
-      }, duration * 1000);
+      }, intervalDuration);
+      
       return () => clearInterval(interval);
     }
-  }, [hovered]);
+  }, [hovered, duration, isLowPerf]);
+
   return (
     <Tag
       onMouseEnter={(event: React.MouseEvent<HTMLDivElement>) => {
@@ -80,10 +94,14 @@ export function HoverBorderGradient({
           "flex-none inset-0 overflow-hidden absolute z-0 rounded-[inherit]"
         )}
         style={{
-          filter: "blur(2px)",
+          // Reduce blur on low performance devices
+          filter: isLowPerf ? "blur(1px)" : "blur(2px)",
           position: "absolute",
           width: "100%",
           height: "100%",
+          // Use hardware acceleration
+          transform: "translate3d(0,0,0)",
+          backfaceVisibility: "hidden",
         }}
         initial={{ background: movingMap[direction] }}
         animate={{
@@ -91,7 +109,13 @@ export function HoverBorderGradient({
             ? [movingMap[direction], highlight]
             : movingMap[direction],
         }}
-        transition={{ ease: "linear", duration: duration ?? 1 }}
+        transition={{
+          ease: isLowPerf ? "linear" : "easeInOut",
+          duration: isLowPerf ? (duration ?? 1) * 0.5 : duration ?? 1,
+          // Reduce animation complexity on mobile
+          type: isLowPerf ? "tween" : "spring",
+          bounce: isLowPerf ? 0 : 0.25
+        }}
       />
       <div className="bg-black absolute z-1 flex-none inset-[2px] rounded-[100px]" />
     </Tag>

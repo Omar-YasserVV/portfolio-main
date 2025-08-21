@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { motion } from "framer-motion";
+import { isLowPerformanceDevice, getOptimizedElementCount } from "@/lib/mobileOptimizations";
 
 import { cn } from "@/lib/utils";
 
@@ -17,25 +18,75 @@ export const PinContainer = ({
   className?: string;
   containerClassName?: string;
 }) => {
+  // Detect if we're on a low performance device
+  const isLowPerformance = isLowPerformanceDevice();
+  
+  // Reduce animation complexity for mobile devices
+  const animationConfig = {
+    scale: isLowPerformance ? 1.01 : 1.05,
+    rotateX: isLowPerformance ? 0 : 5,
+    rotateY: isLowPerformance ? 0 : 5,
+    transition: { duration: isLowPerformance ? 0.1 : 0.2 }
+  };
   const [transform, setTransform] = useState(
     "translate(-50%,-50%) rotateX(0deg)"
   );
 
+  const ref = React.useRef<HTMLDivElement>(null);
+  
+  const onMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    // Skip complex animations on low performance devices
+    if (!ref.current || (isLowPerformance && Math.random() > 0.5)) return;
+    
+    const { left, top, width, height } = ref.current.getBoundingClientRect();
+    
+    // Use requestAnimationFrame for better performance
+    window.requestAnimationFrame(() => {
+      // Reduce calculation complexity on low performance devices
+      const factor = isLowPerformance ? 50 : 25;
+      const x = (e.clientX - left - width / 2) / factor;
+      const y = (e.clientY - top - height / 2) / factor;
+      
+      setTransform(
+        `translate(-50%,-50%) rotateX(${-y * (isLowPerformance ? 0.5 : 1)}deg) rotateY(${x * (isLowPerformance ? 0.5 : 1)}deg) scale(${animationConfig.scale})`
+      );
+    });
+  };
+  
   const onMouseEnter = () => {
-    setTransform("translate(-50%,-50%) rotateX(40deg) scale(0.8)");
+    setTransform(`translate(-50%,-50%) rotateX(${isLowPerformance ? 20 : 40}deg) scale(${isLowPerformance ? 0.9 : 0.8})`);
   };
   const onMouseLeave = () => {
-    setTransform("translate(-50%,-50%) rotateX(0deg) scale(1)");
+    // Use a simpler transform for low performance devices
+    setTransform("translate(-50%,-50%) rotateX(0deg) rotateY(0deg) scale(1)");
+  };
+  
+  // Add touch event handlers for mobile devices
+  const onTouchMove = (e: React.TouchEvent<HTMLDivElement>) => {
+    if (!ref.current || !e.touches[0] || isLowPerformance) return;
+    
+    const { left, top, width, height } = ref.current.getBoundingClientRect();
+    
+    // Use a larger factor to reduce sensitivity on touch
+    const factor = 40;
+    const x = (e.touches[0].clientX - left - width / 2) / factor;
+    const y = (e.touches[0].clientY - top - height / 2) / factor;
+    
+    setTransform(
+      `translate(-50%,-50%) rotateX(${-y * 0.5}deg) rotateY(${x * 0.5}deg) scale(${animationConfig.scale * 0.9})`
+    );
   };
 
   return (
     <div
       className={cn(
-        "relative group/pin z-50  cursor-pointer",
+        "relative group/pin z-50 cursor-pointer",
         containerClassName
       )}
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
+      onMouseMove={!isLowPerformance ? onMouseMove : undefined}
+      onTouchMove={onTouchMove}
     >
       <div
         style={{

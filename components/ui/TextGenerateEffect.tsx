@@ -2,6 +2,7 @@
 import { useEffect } from "react";
 import { motion, stagger, useAnimate } from "framer-motion";
 import { cn } from "@/lib/utils";
+import { isLowPerformanceDevice } from "@/lib/mobileOptimizations";
 
 export const TextGenerateEffect = ({
   words,
@@ -12,18 +13,33 @@ export const TextGenerateEffect = ({
 }) => {
   const [scope, animate] = useAnimate();
   let wordsArray = words.split(" ");
+  
+  // Detect if we're on a low performance device
+  const isLowPerf = isLowPerformanceDevice();
+  
   useEffect(() => {
+    // Skip animation entirely on very low performance devices
+    if (isLowPerf && wordsArray.length > 20) {
+      // For very long text on low-perf devices, just show everything at once
+      animate(
+        "span",
+        { opacity: 1 },
+        { duration: 0.1 }
+      );
+      return;
+    }
+    
+    // Use optimized animation settings based on device performance
     animate(
       "span",
+      { opacity: 1 },
       {
-        opacity: 1,
-      },
-      {
-        duration: 2,
-        delay: stagger(0.2),
+        duration: isLowPerf ? 1 : 2,
+        delay: stagger(isLowPerf ? 0.05 : 0.2),
+        ease: isLowPerf ? "linear" : "easeOut"
       }
     );
-  }, [scope.current]);
+  }, [scope.current, animate, wordsArray.length, isLowPerf]);
 
   const renderWords = () => {
     return (

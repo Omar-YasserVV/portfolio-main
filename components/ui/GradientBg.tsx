@@ -1,6 +1,7 @@
 "use client";
 import { cn } from "@/lib/utils";
 import { useEffect, useRef, useState } from "react";
+import { isLowPerformanceDevice, optimizeScrollAnimation } from "@/lib/mobileOptimizations";
 
 export const BackgroundGradientAnimation = ({
   gradientBackgroundStart = "rgb(108, 0, 162)",
@@ -64,25 +65,65 @@ export const BackgroundGradientAnimation = ({
   }, []);
 
   useEffect(() => {
+    // Skip animation frames on low performance devices
+    const isLowPerformance = isLowPerformanceDevice();
+    const frameSkip = isLowPerformance ? 2 : 1;
+    let frameCount = 0;
+    
     function move() {
       if (!interactiveRef.current) {
         return;
       }
-      setCurX(curX + (tgX - curX) / 20);
-      setCurY(curY + (tgY - curY) / 20);
-      interactiveRef.current.style.transform = `translate(${Math.round(
+      
+      // Only update on certain frames for low performance devices
+      frameCount++;
+      if (frameCount % frameSkip !== 0 && isLowPerformance) {
+        return;
+      }
+      
+      // Reduce animation smoothness on mobile for better performance
+      const smoothingFactor = isLowPerformance ? 10 : 20;
+      setCurX(curX + (tgX - curX) / smoothingFactor);
+      setCurY(curY + (tgY - curY) / smoothingFactor);
+      
+      // Use transform3d for hardware acceleration
+      interactiveRef.current.style.transform = `translate3d(${Math.round(
         curX
-      )}px, ${Math.round(curY)}px)`;
+      )}px, ${Math.round(curY)}px, 0)`;
     }
 
     move();
   }, [tgX, tgY]);
 
+  // Create an optimized mouse move handler that throttles updates on mobile
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
+    // Skip handling on low performance devices if not interactive
+    if (!interactive && isLowPerformanceDevice()) return;
+    
     if (interactiveRef.current) {
       const rect = interactiveRef.current.getBoundingClientRect();
-      setTgX(event.clientX - rect.left);
-      setTgY(event.clientY - rect.top);
+      
+      // Use requestAnimationFrame for smoother performance
+      window.requestAnimationFrame(() => {
+        setTgX(event.clientX - rect.left);
+        setTgY(event.clientY - rect.top);
+      });
+    }
+  };
+  
+  // Create a throttled version for touch events
+  const handleTouchMove = (event: React.TouchEvent<HTMLDivElement>) => {
+    // Skip handling on low performance devices if not interactive
+    if (!interactive && isLowPerformanceDevice()) return;
+    
+    if (interactiveRef.current && event.touches[0]) {
+      const rect = interactiveRef.current.getBoundingClientRect();
+      
+      // Use requestAnimationFrame for smoother performance
+      window.requestAnimationFrame(() => {
+        setTgX(event.touches[0].clientX - rect.left);
+        setTgY(event.touches[0].clientY - rect.top);
+      });
     }
   };
 
@@ -95,12 +136,17 @@ export const BackgroundGradientAnimation = ({
     setIsSafari(/^((?!chrome|android).)*safari/i.test(navigator.userAgent));
   }, []);
 
+  // Determine if we should reduce animation complexity for mobile
+  const shouldReduceMotion = isLowPerformanceDevice();
+  
   return (
     <div
       className={cn(
         "w-full h-full absolute overflow-hidden top-0 left-0 bg-[linear-gradient(40deg,var(--gradient-background-start),var(--gradient-background-end))]",
         containerClassName
       )}
+      onMouseMove={interactive && !shouldReduceMotion ? handleMouseMove : undefined}
+      onTouchMove={interactive ? handleTouchMove : undefined}
     >
       <svg className="hidden">
         <defs>
@@ -136,42 +182,47 @@ export const BackgroundGradientAnimation = ({
             `opacity-100`
           )}
         ></div>
-        <div
-          className={cn(
-            `absolute [background:radial-gradient(circle_at_center,_rgba(var(--second-color),_0.8)_0,_rgba(var(--second-color),_0)_50%)_no-repeat]`,
-            `[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]`,
-            `[transform-origin:calc(50%-400px)]`,
-            `animate-second`,
-            `opacity-100`
-          )}
-        ></div>
-        <div
-          className={cn(
-            `absolute [background:radial-gradient(circle_at_center,_rgba(var(--third-color),_0.8)_0,_rgba(var(--third-color),_0)_50%)_no-repeat]`,
-            `[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]`,
-            `[transform-origin:calc(50%+400px)]`,
-            `animate-third`,
-            `opacity-100`
-          )}
-        ></div>
-        <div
-          className={cn(
-            `absolute [background:radial-gradient(circle_at_center,_rgba(var(--fourth-color),_0.8)_0,_rgba(var(--fourth-color),_0)_50%)_no-repeat]`,
-            `[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]`,
-            `[transform-origin:calc(50%-200px)]`,
-            `animate-fourth`,
-            `opacity-70`
-          )}
-        ></div>
-        <div
-          className={cn(
-            `absolute [background:radial-gradient(circle_at_center,_rgba(var(--fifth-color),_0.8)_0,_rgba(var(--fifth-color),_0)_50%)_no-repeat]`,
-            `[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]`,
-            `[transform-origin:calc(50%-800px)_calc(50%+800px)]`,
-            `animate-fifth`,
-            `opacity-100`
-          )}
-        ></div>
+        {/* Only render additional gradient layers on high-performance devices */}
+        {!shouldReduceMotion && (
+          <>
+            <div
+              className={cn(
+                `absolute [background:radial-gradient(circle_at_center,_rgba(var(--second-color),_0.8)_0,_rgba(var(--second-color),_0)_50%)_no-repeat]`,
+                `[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]`,
+                `[transform-origin:calc(50%-400px)]`,
+                `animate-second`,
+                `opacity-100`
+              )}
+            ></div>
+            <div
+              className={cn(
+                `absolute [background:radial-gradient(circle_at_center,_rgba(var(--third-color),_0.8)_0,_rgba(var(--third-color),_0)_50%)_no-repeat]`,
+                `[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]`,
+                `[transform-origin:calc(50%+400px)]`,
+                `animate-third`,
+                `opacity-100`
+              )}
+            ></div>
+            <div
+              className={cn(
+                `absolute [background:radial-gradient(circle_at_center,_rgba(var(--fourth-color),_0.8)_0,_rgba(var(--fourth-color),_0)_50%)_no-repeat]`,
+                `[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]`,
+                `[transform-origin:calc(50%-200px)]`,
+                `animate-fourth`,
+                `opacity-70`
+              )}
+            ></div>
+            <div
+              className={cn(
+                `absolute [background:radial-gradient(circle_at_center,_rgba(var(--fifth-color),_0.8)_0,_rgba(var(--fifth-color),_0)_50%)_no-repeat]`,
+                `[mix-blend-mode:var(--blending-value)] w-[var(--size)] h-[var(--size)] top-[calc(50%-var(--size)/2)] left-[calc(50%-var(--size)/2)]`,
+                `[transform-origin:calc(50%-800px)_calc(50%+800px)]`,
+                `animate-fifth`,
+                `opacity-100`
+              )}
+            ></div>
+          </>
+        )}
 
         {interactive && (
           <div
