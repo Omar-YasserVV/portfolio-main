@@ -75,7 +75,7 @@ const FloatingDockMobile = ({
               >
                 <a
                   href={item.href}
-                  target="_blank"
+                  target={item.href.startsWith("/") ? "_self" : "_blank"}
                   key={item.title}
                   className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 dark:bg-neutral-900 shadow-lg border border-gray-200 dark:border-neutral-700"
                   onClick={item.onClick}
@@ -187,7 +187,11 @@ function IconContainer({
   const [hovered, setHovered] = useState(false);
 
   return (
-    <a href={href} target="_blank" onClick={onClick}>
+    <a
+      href={href}
+      target={href.startsWith("/") ? "_self" : "_blank"}
+      onClick={onClick}
+    >
       <motion.div
         ref={ref}
         style={{ width, height }}

@@ -7,6 +7,7 @@ import {
   IconBriefcase,
   IconMessageCircle,
   IconUser,
+  IconArticle,
 } from "@tabler/icons-react";
 
 export function FloatingDockDemo() {
@@ -47,6 +48,14 @@ export function FloatingDockDemo() {
     },
     {
       id: 4,
+      title: "Blog",
+      icon: (
+        <IconArticle className="h-full w-full text-neutral-500 dark:text-neutral-300" />
+      ),
+      href: "/blog",
+    },
+    {
+      id: 5,
       title: "Contact",
       icon: (
         <IconMessageCircle className="h-full w-full text-neutral-500 dark:text-neutral-300" />
@@ -54,7 +63,7 @@ export function FloatingDockDemo() {
       href: "#contact",
     },
     {
-      id: 5,
+      id: 6,
       title: "LinkedIn",
       icon: (
         <IconBrandLinkedin className="h-full w-full text-neutral-500 dark:text-neutral-300" />
@@ -62,7 +71,7 @@ export function FloatingDockDemo() {
       href: "https://www.linkedin.com/in/omaryvsser",
     },
     {
-      id: 6,
+      id: 7,
       title: "GitHub",
       icon: (
         <IconBrandGithub className="h-full w-full text-neutral-500 dark:text-neutral-300" />
@@ -95,6 +104,9 @@ export function FloatingDockDemo() {
           behavior: "smooth",
         });
       }
+    } else if (href.startsWith("/")) {
+      // Internal route - let the browser handle navigation
+      // Don't prevent default, let the link work normally
     }
   };
 
