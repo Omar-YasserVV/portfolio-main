@@ -169,9 +169,9 @@ export const shouldSkipFrame = (frameCount?: number) => {
   // Skip every other frame on low performance devices
   // If frameCount is provided, use it for more deterministic skipping
   if (frameCount !== undefined) {
-    return frameCount % 2 === 0; // Deterministic frame skipping when frameCount is provided
+    return frameCount % 2 === 0;
   }
   
   // Otherwise use random skipping
-  return Math.random() > 0.5; // Random frame skipping when no frameCount is provided
+  return Math.random() > 0.5;
 };

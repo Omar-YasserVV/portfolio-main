@@ -56,7 +56,7 @@ export const cleanupResources = () => {
     // Clear any cached data
     if ("caches" in window) {
       caches.keys().then((names) => {
-        names.forEach((name) => {
+        names?.forEach((name) => {
           caches.delete(name);
         });
       });
@@ -70,7 +70,7 @@ export const logBundleSize = () => {
     const scripts = document.querySelectorAll("script[src]");
     let totalSize = 0;
 
-    scripts.forEach((script) => {
+    scripts?.forEach((script) => {
       const src = script.getAttribute("src");
       if (src && src.includes("_next")) {
         // This is a simplified check - in real implementation you'd fetch and measure

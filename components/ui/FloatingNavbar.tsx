@@ -69,11 +69,7 @@ export const FloatingNav = ({
           opacity: visible ? 1 : 0,
         }}
         transition={{
-          duration: isLowPerformance ? 0.1 : 0.2,
-          // Use more efficient animation settings for low performance devices
-          type: isLowPerformance ? "tween" : "spring",
-          // Reduce animation complexity on mobile
-          bounce: isLowPerformance ? 0 : 0.25
+          duration: 0.2,
         }}
         className={cn(
           // change rounded-full to rounded-lg

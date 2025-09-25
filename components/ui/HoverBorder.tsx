@@ -94,14 +94,10 @@ export function HoverBorderGradient({
           "flex-none inset-0 overflow-hidden absolute z-0 rounded-[inherit]"
         )}
         style={{
-          // Reduce blur on low performance devices
-          filter: isLowPerf ? "blur(1px)" : "blur(2px)",
+          filter: "blur(2px)",
           position: "absolute",
           width: "100%",
           height: "100%",
-          // Use hardware acceleration
-          transform: "translate3d(0,0,0)",
-          backfaceVisibility: "hidden",
         }}
         initial={{ background: movingMap[direction] }}
         animate={{
@@ -109,13 +105,7 @@ export function HoverBorderGradient({
             ? [movingMap[direction], highlight]
             : movingMap[direction],
         }}
-        transition={{
-          ease: isLowPerf ? "linear" : "easeInOut",
-          duration: isLowPerf ? (duration ?? 1) * 0.5 : duration ?? 1,
-          // Reduce animation complexity on mobile
-          type: isLowPerf ? "tween" : "spring",
-          bounce: isLowPerf ? 0 : 0.25
-        }}
+        transition={{ ease: "linear", duration: duration ?? 1 }}
       />
       <div className="bg-black absolute z-1 flex-none inset-[2px] rounded-[100px]" />
     </Tag>

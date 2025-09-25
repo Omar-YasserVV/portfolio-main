@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
+import { HomePageNavigation } from "@/components/HomePageNavigation";
 
 // Dynamically import components with loading states and intersection observer
 const Hero = dynamic(() => import("@/components/Hero"), {
@@ -161,7 +162,7 @@ const Home = () => {
         </div>
 
         <Footer />
-        <FloatingDockDemo />
+        <HomePageNavigation />
       </div>
     </main>
   );

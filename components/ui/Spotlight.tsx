@@ -56,7 +56,7 @@ export const Spotlight = ({ className, fill }: SpotlightProps) => {
             result="shape"
           ></feBlend>
           <feGaussianBlur
-            stdDeviation={isLowPerf ? "100" : "151"}
+            stdDeviation="151"
             result="effect1_foregroundBlur_1065_8"
           ></feGaussianBlur>
         </filter>

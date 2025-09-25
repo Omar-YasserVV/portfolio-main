@@ -40,8 +40,8 @@ export const LayoutGrid = ({ cards }: { cards: Card[] }) => {
         <Button
           key={i}
           borderRadius="1.75rem"
-          //   Use shorter duration on low performance devices
-          duration={isLowPerf ? 15000 : 10000}
+          //   default is 2000
+          duration={10000}
           //   add className={cn(card.className, "")}
           className={cn(
             card.className

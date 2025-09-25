@@ -1,16 +1,15 @@
+"use client";
+
 import React, { useState, useEffect } from "react";
 import { FloatingDock } from "@/components/ui/floating-dock";
 import {
   IconBrandGithub,
   IconBrandLinkedin,
   IconHome,
-  IconBriefcase,
-  IconMessageCircle,
-  IconUser,
   IconArticle,
 } from "@tabler/icons-react";
 
-export function FloatingDockDemo() {
+export function BlogPageFloatingDock() {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -21,6 +20,7 @@ export function FloatingDockDemo() {
   if (!isClient) {
     return null;
   }
+
   const links = [
     {
       id: 1,
@@ -28,41 +28,16 @@ export function FloatingDockDemo() {
       icon: (
         <IconHome className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
-      href: "#",
+      href: "/",
     },
-    {
-      id: 2,
-      title: "About",
-      icon: (
-        <IconUser className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "#about",
-    },
+    // {
+    //   id: 2,
+    //   title: "Blog",
+    //   icon: <IconArticle className="h-full w-full text-yellow-300" />,
+    //   href: "/blog",
+    // },
     {
       id: 3,
-      title: "Projects",
-      icon: (
-        <IconBriefcase className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "#projects",
-    },
-
-    {
-      id: 4,
-      title: "Blog",
-      icon: <IconArticle className="h-full w-full text-yellow-300" />,
-      href: "/blog",
-    },
-    {
-      id: 5,
-      title: "Contact",
-      icon: (
-        <IconMessageCircle className="h-full w-full text-neutral-500 dark:text-neutral-300" />
-      ),
-      href: "#contact",
-    },
-    {
-      id: 6,
       title: "LinkedIn",
       icon: (
         <IconBrandLinkedin className="h-full w-full text-neutral-500 dark:text-neutral-300" />
@@ -70,7 +45,7 @@ export function FloatingDockDemo() {
       href: "https://www.linkedin.com/in/omaryvsser",
     },
     {
-      id: 7,
+      id: 4,
       title: "GitHub",
       icon: (
         <IconBrandGithub className="h-full w-full text-neutral-500 dark:text-neutral-300" />
@@ -85,24 +60,10 @@ export function FloatingDockDemo() {
       return;
     }
 
-    if (href === "#") {
-      // Home link - scroll to top
+    if (href.startsWith("http")) {
+      // External links - open in new tab
       e.preventDefault();
-      window.scrollTo({
-        top: 0,
-        behavior: "smooth",
-      });
-    } else if (href.startsWith("#")) {
-      e.preventDefault();
-      const element = document.querySelector(href) as HTMLElement;
-      if (element) {
-        const dockHeight = 120;
-        const elementPosition = element.offsetTop - dockHeight - 20;
-        window.scrollTo({
-          top: elementPosition,
-          behavior: "smooth",
-        });
-      }
+      window.open(href, "_blank");
     } else if (href.startsWith("/")) {
       // Internal route - let the browser handle navigation
       // Don't prevent default, let the link work normally
@@ -112,7 +73,6 @@ export function FloatingDockDemo() {
   return (
     <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[5000]">
       <FloatingDock
-        // mobileClassName="translate-y-8"
         items={links.map((link) => ({
           ...link,
           href: link.href,

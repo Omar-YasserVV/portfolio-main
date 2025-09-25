@@ -10,7 +10,7 @@ import {
   IconArticle,
 } from "@tabler/icons-react";
 
-export function FloatingDockDemo() {
+export function HomePageFloatingDock() {
   const [isClient, setIsClient] = useState(false);
 
   useEffect(() => {
@@ -21,6 +21,7 @@ export function FloatingDockDemo() {
   if (!isClient) {
     return null;
   }
+
   const links = [
     {
       id: 1,
@@ -46,11 +47,11 @@ export function FloatingDockDemo() {
       ),
       href: "#projects",
     },
-
     {
       id: 4,
       title: "Blog",
       icon: <IconArticle className="h-full w-full text-yellow-300" />,
+
       href: "/blog",
     },
     {
@@ -112,7 +113,6 @@ export function FloatingDockDemo() {
   return (
     <div className="fixed bottom-8 left-1/2 transform -translate-x-1/2 z-[5000]">
       <FloatingDock
-        // mobileClassName="translate-y-8"
         items={links.map((link) => ({
           ...link,
           href: link.href,

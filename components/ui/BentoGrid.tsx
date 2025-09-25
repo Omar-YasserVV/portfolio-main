@@ -4,11 +4,32 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-// Dynamically import heavy components
-const Lottie = dynamic(() => import("react-lottie"), {
-  ssr: false,
-  loading: () => <div className="w-96 h-48 bg-transparent" />,
-});
+// Dynamically import heavy components with a wrapper to handle unmounting issues
+const SafeLottie = dynamic(
+  () =>
+    import("react-lottie").then((mod) => {
+      // Create a wrapper component that safely handles unmounting
+      const SafeLottieComponent = (props: any) => {
+        const [mounted, setMounted] = useState(true);
+
+        // Clean up on unmount
+        useEffect(() => {
+          return () => {
+            setMounted(false);
+          };
+        }, []);
+
+        if (!mounted) return null;
+        return <mod.default {...props} />;
+      };
+
+      return SafeLottieComponent;
+    }),
+  {
+    ssr: false,
+    loading: () => <div className="w-96 h-48 bg-transparent" />,
+  }
+);
 
 const BackgroundGradientAnimation = dynamic(
   () =>
@@ -102,6 +123,11 @@ export const BentoGridItem = ({
     const text = "omar1yasser@outlook.com";
     navigator.clipboard.writeText(text);
     setCopied(true);
+
+    // Automatically reset copied state after animation completes
+    // setTimeout(() => {
+    //   setCopied(false);
+    // }, 2500);
   }, []);
 
   return (
@@ -218,7 +244,11 @@ export const BentoGridItem = ({
               >
                 {/* <img src="/confetti.gif" alt="confetti" /> */}
                 {isClient && copied && (
-                  <Lottie options={defaultOptions} height={200} width={400} />
+                  <SafeLottie
+                    options={defaultOptions}
+                    height={200}
+                    width={400}
+                  />
                 )}
               </div>
 
