@@ -4,10 +4,10 @@ import dynamic from "next/dynamic";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 
-// Dynamically import heavy components with a wrapper to handle unmounting issues
+// Dynamically import lottie-react with a wrapper to handle unmounting issues
 const SafeLottie = dynamic(
   () =>
-    import("react-lottie").then((mod) => {
+    import("lottie-react").then((mod) => {
       // Create a wrapper component that safely handles unmounting
       const SafeLottieComponent = (props: any) => {
         const [mounted, setMounted] = useState(true);
@@ -102,14 +102,13 @@ export const BentoGridItem = ({
     setIsClient(true);
   }, []);
 
-  const defaultOptions = useMemo(
+  // lottie-react uses different props structure
+  const lottieProps = useMemo(
     () => ({
+      animationData: animationData,
       loop: copied,
       autoplay: copied,
-      animationData: animationData,
-      rendererSettings: {
-        preserveAspectRatio: "xMidYMid slice",
-      },
+      style: { height: 200, width: 400 }
     }),
     [copied]
   );
@@ -245,9 +244,7 @@ export const BentoGridItem = ({
                 {/* <img src="/confetti.gif" alt="confetti" /> */}
                 {isClient && copied && (
                   <SafeLottie
-                    options={defaultOptions}
-                    height={200}
-                    width={400}
+                    {...lottieProps}
                   />
                 )}
               </div>
