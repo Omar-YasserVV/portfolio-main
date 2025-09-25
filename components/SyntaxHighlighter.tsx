@@ -8,7 +8,7 @@ export function SyntaxHighlighter() {
       const codeBlocks = document.querySelectorAll("pre code");
 
       codeBlocks.forEach((block) => {
-        if (block.dataset.highlighted === "true") return;
+        if ((block as HTMLElement).dataset.highlighted === "true") return;
         if (block.innerHTML.includes("<span")) return; // Skip if already has spans
 
         const code = block.textContent || "";
@@ -61,7 +61,7 @@ export function SyntaxHighlighter() {
         // Only apply if we actually made changes
         if (highlighted !== code) {
           block.innerHTML = highlighted;
-          block.dataset.highlighted = "true";
+          (block as HTMLElement).dataset.highlighted = "true";
         }
       });
     };
