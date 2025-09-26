@@ -2,7 +2,7 @@ import BlurFade from "@/components/magicui/blur-fade";
 import { getBlogPosts } from "@/data/blog";
 import Link from "next/link";
 import { Spotlight } from "@/components/ui/Spotlight";
-import { BlogPageFloatingDock } from "@/components/BlogPageFloatingDock";
+import { BlogResponsiveNavigation } from "@/components/BlogResponsiveNavigation";
 import { PostCard } from "@/components/post-card";
 
 export const metadata = {
@@ -70,8 +70,8 @@ export default async function BlogPage() {
         </section>
       </div>
 
-      {/* Blog Floating Dock */}
-      <BlogPageFloatingDock />
+      {/* Blog Responsive Navigation */}
+      <BlogResponsiveNavigation />
     </main>
   );
 }

@@ -9,7 +9,7 @@ import { Spotlight } from "@/components/ui/Spotlight";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { SyntaxHighlighter } from "@/components/SyntaxHighlighter";
-import { BlogPageFloatingDock } from "@/components/BlogPageFloatingDock";
+import { BlogResponsiveNavigation } from "@/components/BlogResponsiveNavigation";
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
@@ -147,7 +147,7 @@ export default async function Blog({
           {/* Article content */}
           <BlurFade delay={0.12}>
             <article
-              className="max-w-4xl mx-auto text-gray-300 leading-relaxed
+              className="max-w-4xl mx-auto text-gray-300 leading-relaxed w-full overflow-hidden
                 [&_h1]:text-white [&_h1]:text-4xl [&_h1]:font-bold [&_h1]:mb-8 [&_h1]:mt-12 [&_h1]:border-b [&_h1]:border-white/10 [&_h1]:pb-4
                 [&_h2]:text-blue-100 [&_h2]:text-3xl [&_h2]:font-semibold [&_h2]:mb-6 [&_h2]:mt-10
                 [&_h3]:text-blue-200 [&_h3]:text-2xl [&_h3]:font-semibold [&_h3]:mb-4 [&_h3]:mt-8
@@ -156,8 +156,8 @@ export default async function Blog({
                 [&_a]:text-blue-100 [&_a]:no-underline hover:[&_a]:underline [&_a]:font-medium
                 [&_strong]:text-white [&_strong]:font-semibold
                 [&_code]:text-blue-100 [&_code]:bg-white/10 [&_code]:px-2 [&_code]:py-1 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono
-                [&_pre]:bg-gray-900 [&_pre]:border [&_pre]:border-gray-700 [&_pre]:rounded-lg [&_pre]:p-6 [&_pre]:overflow-x-auto [&_pre]:text-sm [&_pre]:font-mono
-                [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-white
+                [&_pre]:bg-gray-900 [&_pre]:border [&_pre]:border-gray-700 [&_pre]:rounded-lg [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre]:text-sm [&_pre]:font-mono [&_pre]:max-w-full [&_pre]:whitespace-pre [&_pre]:scrollbar-thin [&_pre]:scrollbar-track-gray-800 [&_pre]:scrollbar-thumb-gray-600 [&_pre]:hover:scrollbar-thumb-gray-500
+                [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-white [&_pre_code]:block [&_pre_code]:min-w-0 [&_pre_code]:overflow-x-auto
                 [&_blockquote]:border-l-4 [&_blockquote]:border-blue-100 [&_blockquote]:pl-6 [&_blockquote]:italic [&_blockquote]:text-gray-300 [&_blockquote]:bg-white/5 [&_blockquote]:py-4 [&_blockquote]:rounded-r-lg
                 [&_ul]:text-gray-300 [&_ul]:space-y-2 [&_ul]:mb-6
                 [&_ol]:text-gray-300 [&_ol]:space-y-2 [&_ol]:mb-6
@@ -175,8 +175,8 @@ export default async function Blog({
       {/* Syntax Highlighter */}
       <SyntaxHighlighter />
 
-      {/* Blog Floating Dock */}
-      <BlogPageFloatingDock />
+      {/* Blog Responsive Navigation */}
+      <BlogResponsiveNavigation />
     </main>
   );
 }

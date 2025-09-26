@@ -49,18 +49,18 @@ export function HomePageFloatingDock() {
     },
     {
       id: 4,
-      title: "Blog",
-      icon: <IconArticle className="h-full w-full text-yellow-300" />,
-
-      href: "/blog",
-    },
-    {
-      id: 5,
       title: "Contact",
       icon: (
         <IconMessageCircle className="h-full w-full text-neutral-500 dark:text-neutral-300" />
       ),
       href: "#contact",
+    },
+    {
+      id: 5,
+      title: "Blog",
+      icon: <IconArticle className="h-full w-full text-yellow-300" />,
+
+      href: "/blog",
     },
     {
       id: 6,

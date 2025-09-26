@@ -49,7 +49,7 @@ const FloatingDockMobile = ({
 }) => {
   const [open, setOpen] = useState(false);
   return (
-    <div className={cn("relative block md:hidden", className)}>
+    <div className={cn("relative block md:hidden ", className)}>
       <AnimatePresence>
         {open && (
           <motion.div
@@ -77,7 +77,7 @@ const FloatingDockMobile = ({
                   href={item.href}
                   target={item.href.startsWith("/") ? "_self" : "_blank"}
                   key={item.title}
-                  className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 dark:bg-neutral-900 shadow-lg border border-gray-200 dark:border-neutral-700"
+                  className="flex h-12 w-12 items-center justify-center rounded-full bg-gray-50 dark:bg-black-300 shadow-lg border border-gray-200 dark:border-neutral-700"
                   onClick={item.onClick}
                 >
                   <div className="h-5 w-5">{item.icon}</div>
@@ -115,7 +115,7 @@ const FloatingDockDesktop = ({
       onMouseMove={(e) => mouseX.set(e.pageX)}
       onMouseLeave={() => mouseX.set(Infinity)}
       className={cn(
-        "mx-auto hidden h-16 items-end gap-4 rounded-2xl bg-gray-50 px-4 pb-3 md:flex dark:bg-neutral-900",
+        "mx-auto hidden h-16 items-end gap-4 rounded-2xl bg-gray-50 px-4 pb-3 md:flex dark:bg-indigo-950",
         className
       )}
     >
@@ -197,7 +197,7 @@ function IconContainer({
         style={{ width, height }}
         onMouseEnter={() => setHovered(true)}
         onMouseLeave={() => setHovered(false)}
-        className="relative flex aspect-square items-center justify-center rounded-full bg-gray-200 dark:bg-neutral-800"
+        className="relative flex aspect-square items-center justify-center rounded-full bg-gray-200  dark:bg-black-300 hover:bg-gray-300 dark:hover:bg-black-400"
       >
         <AnimatePresence>
           {hovered && (

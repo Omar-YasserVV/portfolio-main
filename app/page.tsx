@@ -35,14 +35,6 @@ const RecentProjects = dynamic(() => import("@/components/RecentProjects"), {
   loading: () => <div className="h-96 bg-black-100" />,
 });
 
-const FloatingDockDemo = dynamic(
-  () =>
-    import("@/components/FloatingDockDemo").then((mod) => ({
-      default: mod.FloatingDockDemo,
-    })),
-  { ssr: false }
-);
-
 // Intersection Observer Hook
 const useIntersectionObserver = (options = {}) => {
   const [isIntersecting, setIsIntersecting] = useState(false);

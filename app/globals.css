@@ -211,15 +211,68 @@ img {
 @layer components {
   /* Base code block styling */
   pre {
-    @apply bg-gray-900 border border-gray-700 rounded-lg p-6 overflow-x-auto text-sm font-mono;
+    @apply bg-gray-900 border border-gray-700 rounded-lg p-4 overflow-x-auto text-sm font-mono max-w-full;
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
     position: relative;
     box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4),
       0 4px 6px -2px rgba(0, 0, 0, 0.2);
+    white-space: pre;
+    word-wrap: normal;
+    overflow-wrap: normal;
+  }
+
+  /* Custom scrollbar for code blocks */
+  pre::-webkit-scrollbar {
+    height: 8px;
+  }
+
+  pre::-webkit-scrollbar-track {
+    background: rgba(31, 41, 55, 0.5);
+    border-radius: 4px;
+  }
+
+  pre::-webkit-scrollbar-thumb {
+    background: rgba(75, 85, 99, 0.8);
+    border-radius: 4px;
+    transition: background 0.2s ease;
+  }
+
+  pre::-webkit-scrollbar-thumb:hover {
+    background: rgba(107, 114, 128, 0.9);
+  }
+
+  /* Firefox scrollbar styling */
+  pre {
+    scrollbar-width: thin;
+    scrollbar-color: rgba(75, 85, 99, 0.8) rgba(31, 41, 55, 0.5);
+  }
+
+  /* Mobile responsive improvements */
+  @media (max-width: 768px) {
+    pre {
+      @apply p-3 text-xs;
+      margin-left: -1rem;
+      margin-right: -1rem;
+      border-radius: 0.5rem;
+    }
+
+    pre code {
+      font-size: 0.75rem;
+      line-height: 1.5;
+    }
+  }
+
+  /* Ensure code blocks don't break layout on small screens */
+  @media (max-width: 640px) {
+    pre {
+      @apply p-2 text-xs;
+      margin-left: -0.5rem;
+      margin-right: -0.5rem;
+    }
   }
 
   pre code {
-    @apply text-gray-100;
+    @apply text-gray-100 block min-w-0;
     color: #f1f5f9;
     background: transparent;
     padding: 0;
@@ -228,6 +281,10 @@ img {
       monospace;
     font-weight: 400;
     line-height: 1.6;
+    overflow-x: auto;
+    white-space: pre;
+    word-wrap: normal;
+    overflow-wrap: normal;
   }
 
   /* Add colorful accent border */

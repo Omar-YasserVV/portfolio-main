@@ -26,15 +26,21 @@ export const CanvasRevealEffect = ({
 }) => {
   // Check if we're on a low performance device
   const isLowPerf = isLowPerformanceDevice();
-  
+
   // Adjust animation speed and dot size for low performance devices
-  const optimizedAnimationSpeed = isLowPerf ? animationSpeed * 0.6 : animationSpeed;
-  const optimizedDotSize = isLowPerf ? (dotSize ? Math.max(1, dotSize - 1) : 2) : (dotSize ?? 3);
-  
+  const optimizedAnimationSpeed = isLowPerf
+    ? animationSpeed * 0.6
+    : animationSpeed;
+  const optimizedDotSize = isLowPerf
+    ? dotSize
+      ? Math.max(1, dotSize - 1)
+      : 2
+    : dotSize ?? 3;
+
   // Reduce the number of opacities for low performance devices
-  const optimizedOpacities = isLowPerf 
-    ? [0.3, 0.5, 0.8, 1] 
-    : (opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1]);
+  const optimizedOpacities = isLowPerf
+    ? [0.3, 0.5, 0.8, 1]
+    : opacities ?? [0.3, 0.3, 0.3, 0.5, 0.5, 0.5, 0.8, 0.8, 0.8, 1];
   return (
     <div className={cn("h-full relative bg-white w-full", containerClassName)}>
       <div className="h-full w-full">

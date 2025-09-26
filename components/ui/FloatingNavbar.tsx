@@ -23,12 +23,12 @@ export const FloatingNav = ({
 }) => {
   // Detect if we're on a low performance device
   const isLowPerformance = isLowPerformanceDevice();
-  
+
   const { scrollYProgress } = useScroll();
 
   // set true for the initial state so that nav bar is visible in the hero section
   const [visible, setVisible] = useState(true);
-  
+
   // Track last update time to throttle updates on low-performance devices
   const [lastUpdateTime, setLastUpdateTime] = useState(0);
 
@@ -41,7 +41,7 @@ export const FloatingNav = ({
         return;
       }
       setLastUpdateTime(now);
-      
+
       let direction = current! - scrollYProgress.getPrevious()!;
 
       if (scrollYProgress.get() < 0.05) {
@@ -101,20 +101,36 @@ export const FloatingNav = ({
                 return;
               }
 
-              e.preventDefault();
-              const element = document.querySelector(navItem.link);
-              if (element) {
-                const navHeight = 80; // Approximate height of navigation bar
-                const elementPosition = element.offsetTop - navHeight - 20; // Extra 20px for breathing room
+              // Handle different types of navigation
+              if (navItem.link === "#") {
+                // Home link - scroll to top
+                e.preventDefault();
+                window.scrollTo({
+                  top: 0,
+                  behavior: "smooth",
+                });
+              } else if (navItem.link.startsWith("#")) {
+                // Hash links (internal page navigation)
+                e.preventDefault();
+                const element = document.querySelector(navItem.link);
+                if (element) {
+                  const navHeight = 80; // Approximate height of navigation bar
+                  const elementPosition = element.offsetTop - navHeight - 20; // Extra 20px for breathing room
 
-                // Small delay to ensure navigation bar animation completes
-                setTimeout(() => {
-                  window.scrollTo({
-                    top: elementPosition,
-                    behavior: "smooth",
-                  });
-                }, 100);
+                  // Small delay to ensure navigation bar animation completes
+                  setTimeout(() => {
+                    window.scrollTo({
+                      top: elementPosition,
+                      behavior: "smooth",
+                    });
+                  }, 100);
+                }
+              } else if (navItem.link.startsWith("http")) {
+                // External links - open in new tab
+                e.preventDefault();
+                window.open(navItem.link, "_blank");
               }
+              // For internal routes like /blog, let the Link component handle navigation normally
             }}
           >
             <span className="block sm:hidden">{navItem.icon}</span>
