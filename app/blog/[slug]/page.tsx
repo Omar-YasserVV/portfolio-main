@@ -9,7 +9,7 @@ import { Spotlight } from "@/components/ui/Spotlight";
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
 import { SyntaxHighlighter } from "@/components/SyntaxHighlighter";
-import { BlogResponsiveNavigation } from "@/components/BlogResponsiveNavigation";
+import { Navigation } from "@/components/navigation/Navigation";
 
 export async function generateStaticParams() {
   const posts = await getBlogPosts();
@@ -176,7 +176,7 @@ export default async function Blog({
       <SyntaxHighlighter />
 
       {/* Blog Responsive Navigation */}
-      <BlogResponsiveNavigation />
+      <Navigation variant="blog" />
     </main>
   );
 }

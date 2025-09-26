@@ -2,38 +2,41 @@
 
 import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
-import { HomePageNavigation } from "@/components/HomePageNavigation";
+import { Navigation } from "@/components/navigation/Navigation";
 
 // Dynamically import components with loading states and intersection observer
-const Hero = dynamic(() => import("@/components/Hero"), {
+const Hero = dynamic(() => import("@/components/content/Hero"), {
   ssr: false,
   loading: () => <div className="h-screen bg-black-100" />,
 });
 
-const Grid = dynamic(() => import("@/components/Grid"), {
+const Grid = dynamic(() => import("@/components/content/Grid"), {
   ssr: false,
   loading: () => <div className="h-96 bg-black-100" />,
 });
 
-const Footer = dynamic(() => import("@/components/Footer"), {
+const Footer = dynamic(() => import("@/components/layout/Footer"), {
   ssr: false,
   loading: () => <div className="h-64 bg-black-100" />,
 });
 
-const Approach = dynamic(() => import("@/components/Approach"), {
+const Approach = dynamic(() => import("@/components/content/Approach"), {
   ssr: false,
   loading: () => <div className="h-96 bg-black-100" />,
 });
 
-const Experience = dynamic(() => import("@/components/Experience"), {
+const Experience = dynamic(() => import("@/components/content/Experience"), {
   ssr: false,
   loading: () => <div className="h-96 bg-black-100" />,
 });
 
-const RecentProjects = dynamic(() => import("@/components/RecentProjects"), {
-  ssr: false,
-  loading: () => <div className="h-96 bg-black-100" />,
-});
+const RecentProjects = dynamic(
+  () => import("@/components/content/RecentProjects"),
+  {
+    ssr: false,
+    loading: () => <div className="h-96 bg-black-100" />,
+  }
+);
 
 // Intersection Observer Hook
 const useIntersectionObserver = (options = {}) => {
@@ -154,7 +157,7 @@ const Home = () => {
         </div>
 
         <Footer />
-        <HomePageNavigation />
+        <Navigation variant="home" />
       </div>
     </main>
   );
