@@ -3,6 +3,7 @@ import { getBlogPosts } from "@/data/blog";
 import Link from "next/link";
 import { Spotlight } from "@/components/ui/Spotlight";
 import { BlogPageFloatingDock } from "@/components/BlogPageFloatingDock";
+import { PostCard } from "@/components/post-card";
 
 export const metadata = {
   title: "Blog",
@@ -55,43 +56,15 @@ export default async function BlogPage() {
                 return 1;
               })
               .map((post, id) => (
-                <BlurFade
-                  delay={BLUR_FADE_DELAY * 2 + id * 0.05}
-                  key={post.slug}
-                >
-                  <Link
-                    className="block group mb-8 p-6 rounded-2xl border border-white/10 bg-white/5 backdrop-blur-sm hover:bg-white/10 transition-all duration-500 overflow-hidden"
-                    href={`/blog/${post.slug}`}
-                  >
-                    <div className="w-full flex flex-col space-y-3">
-                      <h2 className="text-xl md:text-2xl font-medium text-white group-hover:text-blue-100 transition-colors duration-300">
-                        {post.metadata.title}
-                      </h2>
-
-                      {/* Summary with hover animation */}
-                      {post.metadata.summary && (
-                        <div className="relative overflow-hidden h-6">
-                          <div className="absolute inset-0 transform transition-all duration-500 ease-out group-hover:translate-y-0 translate-y-full opacity-0 group-hover:opacity-100">
-                            <p className="text-gray-300 text-sm md:text-base leading-relaxed">
-                              {post.metadata.summary}
-                            </p>
-                          </div>
-                        </div>
-                      )}
-
-                      <p className="text-xs text-blue-100 font-mono">
-                        {new Date(post.metadata.publishedAt).toLocaleDateString(
-                          "en-US",
-                          {
-                            year: "numeric",
-                            month: "long",
-                            day: "numeric",
-                          }
-                        )}
-                      </p>
-                    </div>
-                  </Link>
-                </BlurFade>
+                <PostCard
+                  key={id}
+                  category={post.metadata.category}
+                  readTime={post.metadata.readTime}
+                  title={post.metadata.title}
+                  slug={post.slug}
+                  description={post.metadata.summary}
+                  date={post.metadata.publishedAt}
+                />
               ))}
           </div>
         </section>
