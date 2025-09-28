@@ -44,7 +44,7 @@ export default async function BlogPage() {
             </div>
           </BlurFade>
 
-          <div className="max-w-4xl mx-auto">
+          <div className="max-w-4xl mx-auto flex-col space-y-6">
             {posts
               .sort((a, b) => {
                 if (
