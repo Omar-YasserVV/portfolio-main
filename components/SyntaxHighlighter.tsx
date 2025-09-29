@@ -16,6 +16,21 @@ export function SyntaxHighlighter() {
         // Only highlight if it's simple code without HTML
         if (code.includes("<") || code.includes("&lt;")) return;
 
+        // Skip ASCII art diagrams (call stack visualizations)
+        if (
+          code.includes("┌") ||
+          code.includes("└") ||
+          code.includes("├") ||
+          code.includes("│") ||
+          code.includes("─") ||
+          (code.includes("+") &&
+            code.includes("-") &&
+            code.includes("|") &&
+            code.includes("Function EC")) ||
+          code.includes("Global EC")
+        )
+          return;
+
         // Enhanced colorful highlighting
         let highlighted = code
           // Strings first (green)

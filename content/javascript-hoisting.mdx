@@ -1,0 +1,378 @@
+---
+title: "JavaScript Hoisting: Understanding Variable and Function Hoisting with Execution Context"
+publishedAt: "2025-01-15"
+summary: "Dive deep into JavaScript hoisting mechanism, execution context, and the difference between 'not defined' and 'undefined'. Learn how hoisting works under the hood with real examples."
+readTime: "12 min"
+---
+
+Hoisting is one of the most misunderstood concepts in JavaScript. Many developers think it's just "moving variables to the top," but that's a **dangerous oversimplification**. Let's understand what really happens under the hood with Execution Contexts and the Call Stack.
+
+---
+
+## 🎯 What is Hoisting?
+
+**Hoisting** is JavaScript's behavior of moving declarations to the top of their scope during the **Memory Creation Phase** of the Execution Context. But here's the crucial point: **only the declarations are hoisted, not the initializations**.
+
+This means:
+
+- `var` declarations are hoisted and initialized with `undefined`
+- `let` and `const` declarations are hoisted but **not initialized** (Temporal Dead Zone)
+- Function declarations are fully hoisted
+- Function expressions are hoisted as variables
+
+---
+
+## 🏗️ Hoisting Behind the Scenes: Execution Context
+
+Let's see how hoisting works with a real example:
+
+```javascript
+console.log(a); // undefined
+console.log(b); // ReferenceError: Cannot access 'b' before initialization
+console.log(c); // ReferenceError: c is not defined
+
+var a = 5;
+let b = 10;
+const c = 15;
+
+function greet() {
+  console.log("Hello!");
+}
+```
+
+### Step 1: Global Execution Context Creation
+
+When JavaScript starts executing this code, it creates the **Global Execution Context**:
+
+**Memory Creation Phase:**
+
+| Memory                          | Code                        |
+| ------------------------------- | --------------------------- |
+| `a: undefined`                  | `var a = 5;` ⏳             |
+| `b: <uninitialized>`            | `let b = 10;` ⏳            |
+| `c: <uninitialized>`            | `const c = 15;` ⏳          |
+| `greet: function greet() {...}` | `function greet() {...}` ✅ |
+
+**Key Points:**
+
+- `var a` is hoisted and initialized with `undefined`
+- `let b` and `const c` are hoisted but **not initialized** (Temporal Dead Zone)
+- `function greet` is **fully hoisted** and available immediately
+
+### Step 2: Code Execution Phase
+
+Now JavaScript executes line by line:
+
+| Memory                          | Code                            |
+| ------------------------------- | ------------------------------- |
+| `a: undefined` → `5`            | `console.log(a);` → `undefined` |
+| `b: <uninitialized>`            | `console.log(b);` → **Error**   |
+| `c: <uninitialized>`            | `console.log(c);` → **Error**   |
+| `greet: function greet() {...}` | `function greet() {...}` ✅     |
+
+---
+
+## 📚 Function Hoisting: The Complete Picture
+
+Function declarations are **completely hoisted**, meaning both the declaration and the function body are available throughout the entire scope.
+
+```javascript
+console.log(sayHello); // [Function: sayHello]
+console.log(sayGoodbye); // undefined
+
+function sayHello() {
+  return "Hello!";
+}
+
+var sayGoodbye = function () {
+  return "Goodbye!";
+};
+```
+
+### Execution Context Analysis:
+
+**Memory Creation Phase:**
+
+| Memory                                | Code                                   |
+| ------------------------------------- | -------------------------------------- |
+| `sayHello: function sayHello() {...}` | `function sayHello() {...}` ✅         |
+| `sayGoodbye: undefined`               | `var sayGoodbye = function() {...}` ⏳ |
+
+**Code Execution Phase:**
+
+| Memory                                | Code                                   |
+| ------------------------------------- | -------------------------------------- |
+| `sayHello: function sayHello() {...}` | `function sayHello() {...}` ✅         |
+| `sayGoodbye: function() {...}`        | `var sayGoodbye = function() {...}` ✅ |
+
+---
+
+## 🔍 Deep Dive: Temporal Dead Zone (TDZ)
+
+The **Temporal Dead Zone** is the time between entering a scope and the variable being declared. During this time, the variable exists but cannot be accessed.
+
+```javascript
+console.log(typeof a); // undefined
+console.log(typeof b); // ReferenceError: Cannot access 'b' before initialization
+
+var a = 5;
+let b = 10;
+```
+
+### Execution Context Breakdown:
+
+**Memory Creation Phase:**
+
+| Memory                     | Code             |
+| -------------------------- | ---------------- |
+| `a: undefined`             | `var a = 5;` ⏳  |
+| `b: <uninitialized>` (TDZ) | `let b = 10;` ⏳ |
+
+**Code Execution Phase:**
+
+| Memory                      | Code             |
+| --------------------------- | ---------------- |
+| `a: undefined` → `5`        | `var a = 5;` ✅  |
+| `b: <uninitialized>` → `10` | `let b = 10;` ✅ |
+
+---
+
+## 🧠 Not Defined vs Undefined: The Critical Difference
+
+This is a **crucial interview question** that trips up many developers:
+
+```javascript
+console.log(a); // undefined
+console.log(b); // ReferenceError: b is not defined
+
+var a = 5;
+// b is never declared
+```
+
+### Execution Context Analysis:
+
+**Memory Creation Phase:**
+
+| Memory                | Code                     |
+| --------------------- | ------------------------ |
+| `a: undefined`        | `var a = 5;` ⏳          |
+| `b: <does not exist>` | `// b is never declared` |
+
+**Code Execution Phase:**
+
+| Memory                | Code                          |
+| --------------------- | ----------------------------- |
+| `a: undefined` → `5`  | `var a = 5;` ✅               |
+| `b: <does not exist>` | `console.log(b);` → **Error** |
+
+### The Key Differences:
+
+| Scenario      | Error Type     | Explanation                      |
+| ------------- | -------------- | -------------------------------- |
+| `undefined`   | No Error       | Variable exists but has no value |
+| `not defined` | ReferenceError | Variable doesn't exist in memory |
+
+---
+
+## 🎭 Real-World Example: Function Hoisting in Action
+
+Let's see a complex example that demonstrates all hoisting concepts:
+
+```javascript
+console.log(x); // undefined
+console.log(y); // ReferenceError: Cannot access 'y' before initialization
+console.log(z); // ReferenceError: z is not defined
+
+var x = 10;
+let y = 20;
+// z is never declared
+
+function example() {
+  console.log("Function is hoisted!");
+}
+
+var example2 = function () {
+  console.log("This is not hoisted!");
+};
+```
+
+### Step-by-Step Execution Context:
+
+**1. Memory Creation Phase:**
+
+```
+┌─────────────────────────────┐
+│ Global EC (Memory Phase)    │
+├─────────────────────────────┤
+│ x: undefined                │
+│ y: <uninitialized> (TDZ)    │
+│ example: function example()  │
+│ example2: undefined         │
+└─────────────────────────────┘
+```
+
+**2. Code Execution Phase:**
+
+```
+┌─────────────────────────────┐
+│ Global EC (Execution Phase) │
+├─────────────────────────────┤
+│ x: 10                       │
+│ y: 20                       │
+│ example: function example() │
+│ example2: function() {...}  │
+└─────────────────────────────┘
+```
+
+---
+
+## 🌐 Browser Demo: Call Stack Visualization
+
+Let's trace through a more complex example in the browser:
+
+```javascript
+function outer() {
+  console.log(a); // undefined
+  console.log(b); // ReferenceError
+
+  var a = 5;
+  let b = 10;
+
+  function inner() {
+    console.log("Inner function");
+  }
+
+  inner();
+}
+
+outer();
+```
+
+### Call Stack Evolution:
+
+**1. Global EC Created:**
+
+```
+┌─────────────────────────────┐
+│ Global EC                    │
+├─────────────────────────────┤
+│ outer: function outer()     │
+└─────────────────────────────┘
+```
+
+**2. outer() Called:**
+
+```
+┌─────────────────────────────┐
+│ Function EC (outer)         │
+├─────────────────────────────┤
+│ a: undefined                │
+│ b: <uninitialized> (TDZ)    │
+│ inner: function inner()     │
+├─────────────────────────────┤
+│ Global EC                   │
+└─────────────────────────────┘
+```
+
+**3. inner() Called:**
+
+```
+┌─────────────────────────────┐
+│ Function EC (inner)         │
+├─────────────────────────────┤
+│ (no local variables)        │
+├─────────────────────────────┤
+│ Function EC (outer)         │
+├─────────────────────────────┤
+│ Global EC                   │
+└─────────────────────────────┘
+```
+
+---
+
+## ⚡ Interview Tips: Beyond "It Moves Variables Up"
+
+**❌ Wrong Answer:**
+
+> "Hoisting moves variables to the top of the scope."
+
+**✅ Correct Answer:**
+
+> "Hoisting is JavaScript's behavior during the Memory Creation Phase of Execution Context. Variable declarations are hoisted to the top of their scope, but only `var` declarations are initialized with `undefined`. `let` and `const` declarations enter the Temporal Dead Zone until their declaration line is reached."
+
+### Key Interview Points:
+
+1. **Execution Context**: Hoisting happens during the Memory Creation Phase
+2. **Temporal Dead Zone**: `let` and `const` are hoisted but not initialized
+3. **Function Hoisting**: Function declarations are completely hoisted
+4. **Not Defined vs Undefined**: Critical distinction for error handling
+5. **Scope**: Hoisting is scope-specific, not global
+
+---
+
+## 🎯 Advanced Hoisting Scenarios
+
+### Scenario 1: Block Scope Hoisting
+
+```javascript
+{
+  console.log(a); // undefined
+  console.log(b); // ReferenceError
+
+  var a = 5;
+  let b = 10;
+}
+```
+
+### Scenario 2: Function Expression Hoisting
+
+```javascript
+console.log(func); // undefined
+console.log(func()); // TypeError: func is not a function
+
+var func = function () {
+  return "Hello!";
+};
+```
+
+### Scenario 3: Arrow Function Hoisting
+
+```javascript
+console.log(arrow); // undefined
+console.log(arrow()); // TypeError: arrow is not a function
+
+var arrow = () => {
+  return "Arrow!";
+};
+```
+
+---
+
+## 📊 Hoisting Summary Table
+
+| Declaration Type      | Hoisted | Initialized        | TDZ | Example                 |
+| --------------------- | ------- | ------------------ | --- | ----------------------- |
+| `var`                 | ✅      | ✅ (`undefined`)   | ❌  | `var a = 5;`            |
+| `let`                 | ✅      | ❌                 | ✅  | `let b = 10;`           |
+| `const`               | ✅      | ❌                 | ✅  | `const c = 15;`         |
+| `function`            | ✅      | ✅ (full function) | ❌  | `function f() {}`       |
+| `function expression` | ✅      | ✅ (`undefined`)   | ❌  | `var f = function() {}` |
+| `arrow function`      | ✅      | ✅ (`undefined`)   | ❌  | `var f = () => {}`      |
+
+---
+
+## ✅ Key Takeaways
+
+- **Hoisting** happens during the **Memory Creation Phase** of Execution Context
+- Only **declarations** are hoisted, not **initializations**
+- `var` declarations are hoisted and initialized with `undefined`
+- `let` and `const` declarations are hoisted but enter the **Temporal Dead Zone**
+- **Function declarations** are completely hoisted
+- **Function expressions** are hoisted as variables
+- **Not defined** ≠ **undefined** (critical for debugging)
+- Hoisting is **scope-specific**, not global
+
+Understanding hoisting through Execution Contexts gives you a deeper, more accurate picture of how JavaScript works under the hood. This knowledge is essential for debugging, writing better code, and acing JavaScript interviews!
+
+The key is to think in terms of **Execution Contexts** and **Memory Creation Phase**, not just "moving code to the top." This mental model will serve you well throughout your JavaScript journey.
+

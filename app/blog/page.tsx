@@ -1,6 +1,5 @@
 import BlurFade from "@/components/magicui/blur-fade";
 import { getBlogPosts } from "@/data/blog";
-import Link from "next/link";
 import { Spotlight } from "@/components/ui/Spotlight";
 import { Navigation } from "@/components/navigation/Navigation";
 import { PostCard } from "@/components/post-card";
