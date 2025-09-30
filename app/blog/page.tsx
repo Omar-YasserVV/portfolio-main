@@ -1,8 +1,10 @@
+import { Suspense } from "react";
 import BlurFade from "@/components/magicui/blur-fade";
 import { getBlogPosts } from "@/data/blog";
 import { Spotlight } from "@/components/ui/Spotlight";
 import { Navigation } from "@/components/navigation/Navigation";
 import { BlogListWithFilter } from "@/components/blog/BlogListWithFilter";
+import { BlogPostSkeleton } from "@/components/post-card";
 
 export const metadata = {
   title: "Blog",
@@ -44,7 +46,17 @@ export default async function BlogPage() {
           </BlurFade>
 
           <div className="max-w-6xl mx-auto">
-            <BlogListWithFilter posts={posts as any} />
+            <Suspense
+              fallback={
+                <div className="space-y-6">
+                  <BlogPostSkeleton />
+                  <BlogPostSkeleton />
+                  <BlogPostSkeleton />
+                </div>
+              }
+            >
+              <BlogListWithFilter posts={posts as any} />
+            </Suspense>
           </div>
         </section>
       </div>
