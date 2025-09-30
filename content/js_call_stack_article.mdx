@@ -3,6 +3,7 @@ title: "JavaScript Call Stack: How JavaScript Manages Execution Contexts"
 publishedAt: "2025-09-29"
 summary: "The Call Stack is JavaScript's way of keeping track of function calls and execution contexts. Let's see how it works step by step with real examples."
 readTime: "8 min"
+category: "JavaScript fundamentals"
 ---
 
 Let me start with a quick recap of what we learned before:
@@ -288,15 +289,16 @@ Understanding the call stack explains:
 
 ---
 
-## ✅ Key Takeaways
+## Key Takeaways
 
-- JavaScript uses a **Call Stack** to manage execution contexts
-- **Global Execution Context** is always at the bottom
-- Each function call creates a **new execution context** on top of the stack
-- JavaScript always works with the **top context** on the stack
-- When a function finishes, its context is **deleted** from the stack
-- The stack follows **LIFO** (Last In, First Out) principle
-- When the program ends, the call stack becomes **completely empty**
-- This is why JavaScript is **single-threaded** - it processes one context at a time
+JavaScript manages execution with a Call Stack.
 
-The call stack is the foundation that makes JavaScript's execution model predictable and organized. Every time you call a function, you're adding to this stack. Every time a function returns, you're removing from it. Simple, but powerful!
+The Global Context sits at the bottom; each function call adds a new one on top.
+
+The stack works in LIFO order: add on call, remove on return.
+
+When it’s empty, the program ends.
+
+This single stack is why JavaScript is single-threaded.
+
+The call stack keeps JavaScript execution predictable: functions go in, functions come out — simple but powerful.

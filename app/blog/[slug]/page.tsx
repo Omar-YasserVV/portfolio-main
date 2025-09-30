@@ -124,7 +124,7 @@ export default async function Blog({
 
           {/* Article header */}
           <BlurFade delay={0.08}>
-            <div className="max-w-4xl mx-auto border-b border-gray-700 mb-10">
+            <div className="max-w-4xl mx-auto border-b border-gray-700 mb-4">
               <h1 className="font-medium text-3xl md:text-4xl lg:text-4xl tracking-tighter text-white mb-2">
                 {post.metadata.title}
               </h1>
@@ -135,11 +135,11 @@ export default async function Blog({
                     {formatDate(post.metadata.publishedAt)}
                   </p>
                 </Suspense>
-                {post.metadata.summary && (
+                {/* {post.metadata.summary && (
                   <p className="text-gray-300 text-sm max-w-md text-left">
                     {post.metadata.summary}
                   </p>
-                )}
+                )} */}
               </div>
             </div>
           </BlurFade>

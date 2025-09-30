@@ -2,7 +2,7 @@ import BlurFade from "@/components/magicui/blur-fade";
 import { getBlogPosts } from "@/data/blog";
 import { Spotlight } from "@/components/ui/Spotlight";
 import { Navigation } from "@/components/navigation/Navigation";
-import { PostCard } from "@/components/post-card";
+import { BlogListWithFilter } from "@/components/blog/BlogListWithFilter";
 
 export const metadata = {
   title: "Blog",
@@ -43,28 +43,8 @@ export default async function BlogPage() {
             </div>
           </BlurFade>
 
-          <div className="max-w-4xl mx-auto flex-col space-y-6">
-            {posts
-              .sort((a, b) => {
-                if (
-                  new Date(a.metadata.publishedAt) >
-                  new Date(b.metadata.publishedAt)
-                ) {
-                  return -1;
-                }
-                return 1;
-              })
-              .map((post, id) => (
-                <PostCard
-                  key={id}
-                  category={post.metadata.category}
-                  readTime={post.metadata.readTime}
-                  title={post.metadata.title}
-                  slug={post.slug}
-                  description={post.metadata.summary}
-                  date={post.metadata.publishedAt}
-                />
-              ))}
+          <div className="max-w-6xl mx-auto">
+            <BlogListWithFilter posts={posts as any} />
           </div>
         </section>
       </div>

@@ -10,8 +10,8 @@ import { Skeleton } from "./ui/skeleton";
  * Props interface for the PostCard component
  */
 interface PostCardProps {
-  /** Array of categories the post belongs to */
-  category: string[];
+  /** Category or categories the post belongs to */
+  category: string | string[];
   /** Estimated reading time of the post */
   readTime: string;
   /** Title of the post */
@@ -52,6 +52,11 @@ export const PostCard = ({
   date,
 }: PostCardProps) => {
   const [isHovered, setIsHovered] = useState(false);
+  const categories = Array.isArray(category)
+    ? category
+    : category
+    ? [category]
+    : [];
 
   return (
     <Link href={`blog/${slug}`} className="block">
@@ -64,10 +69,10 @@ export const PostCard = ({
           <div className="bg-black/60 backdrop-blur-md rounded-xl shadow-lg border border-white/5 p-6  bg-[#1e2f2f]  transition-colors duration-300 hover:bg-muted/35 hover:border-foreground">
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm">
-                {category?.map((cat, i) => (
+                {categories?.map((cat, i) => (
                   <Fragment key={i}>
                     <span>{cat}</span>
-                    {i < category.length - 1 && <span key={i + 1}>|</span>}
+                    {i < categories.length - 1 && <span key={i + 1}>|</span>}
                   </Fragment>
                 ))}
                 <span>•</span>
