@@ -1,6 +1,6 @@
 ---
 title: "JavaScript Hoisting: Understanding Variable and Function Hoisting with Execution Context"
-publishedAt: "2025-01-15"
+publishedAt: "2025-09-30"
 summary: "Dive deep into JavaScript hoisting mechanism, execution context, and the difference between 'not defined' and 'undefined'. Learn how hoisting works under the hood with real examples."
 readTime: "12 min"
 category: "JavaScript fundamentals"
@@ -10,7 +10,7 @@ Hoisting is one of the most misunderstood concepts in JavaScript. Many developer
 
 ---
 
-## 🎯 What is Hoisting?
+## What is Hoisting?
 
 **Hoisting** is JavaScript's behavior of moving declarations to the top of their scope during the **Memory Creation Phase** of the Execution Context. But here's the crucial point: **only the declarations are hoisted, not the initializations**.
 
@@ -23,7 +23,7 @@ This means:
 
 ---
 
-## 🏗️ Hoisting Behind the Scenes: Execution Context
+## Hoisting Behind the Scenes: Execution Context
 
 Let's see how hoisting works with a real example:
 
@@ -47,12 +47,12 @@ When JavaScript starts executing this code, it creates the **Global Execution Co
 
 **Memory Creation Phase:**
 
-| Memory                          | Code                        |
-| ------------------------------- | --------------------------- |
-| `a: undefined`                  | `var a = 5;` ⏳             |
-| `b: <uninitialized>`            | `let b = 10;` ⏳            |
-| `c: <uninitialized>`            | `const c = 15;` ⏳          |
-| `greet: function greet() {...}` | `function greet() {...}` ✅ |
+| Memory                          | Code                     |
+| ------------------------------- | ------------------------ |
+| `a: undefined`                  | `var a = 5;`             |
+| `b: <uninitialized>`            | `let b = 10;`            |
+| `c: <uninitialized>`            | `const c = 15;`          |
+| `greet: function greet() {...}` | `function greet() {...}` |
 
 **Key Points:**
 
@@ -69,11 +69,11 @@ Now JavaScript executes line by line:
 | `a: undefined` → `5`            | `console.log(a);` → `undefined` |
 | `b: <uninitialized>`            | `console.log(b);` → **Error**   |
 | `c: <uninitialized>`            | `console.log(c);` → **Error**   |
-| `greet: function greet() {...}` | `function greet() {...}` ✅     |
+| `greet: function greet() {...}` | `function greet() {...}`        |
 
 ---
 
-## 📚 Function Hoisting: The Complete Picture
+## Function Hoisting: The Complete Picture
 
 Function declarations are **completely hoisted**, meaning both the declaration and the function body are available throughout the entire scope.
 
@@ -94,21 +94,21 @@ var sayGoodbye = function () {
 
 **Memory Creation Phase:**
 
-| Memory                                | Code                                   |
-| ------------------------------------- | -------------------------------------- |
-| `sayHello: function sayHello() {...}` | `function sayHello() {...}` ✅         |
-| `sayGoodbye: undefined`               | `var sayGoodbye = function() {...}` ⏳ |
+| Memory                                | Code                                |
+| ------------------------------------- | ----------------------------------- |
+| `sayHello: function sayHello() {...}` | `function sayHello() {...}`         |
+| `sayGoodbye: undefined`               | `var sayGoodbye = function() {...}` |
 
 **Code Execution Phase:**
 
-| Memory                                | Code                                   |
-| ------------------------------------- | -------------------------------------- |
-| `sayHello: function sayHello() {...}` | `function sayHello() {...}` ✅         |
-| `sayGoodbye: function() {...}`        | `var sayGoodbye = function() {...}` ✅ |
+| Memory                                | Code                                |
+| ------------------------------------- | ----------------------------------- |
+| `sayHello: function sayHello() {...}` | `function sayHello() {...}`         |
+| `sayGoodbye: function() {...}`        | `var sayGoodbye = function() {...}` |
 
 ---
 
-## 🔍 Deep Dive: Temporal Dead Zone (TDZ)
+## Deep Dive: Temporal Dead Zone (TDZ)
 
 The **Temporal Dead Zone** is the time between entering a scope and the variable being declared. During this time, the variable exists but cannot be accessed.
 
@@ -124,21 +124,21 @@ let b = 10;
 
 **Memory Creation Phase:**
 
-| Memory                     | Code             |
-| -------------------------- | ---------------- |
-| `a: undefined`             | `var a = 5;` ⏳  |
-| `b: <uninitialized>` (TDZ) | `let b = 10;` ⏳ |
+| Memory                     | Code          |
+| -------------------------- | ------------- |
+| `a: undefined`             | `var a = 5;`  |
+| `b: <uninitialized>` (TDZ) | `let b = 10;` |
 
 **Code Execution Phase:**
 
-| Memory                      | Code             |
-| --------------------------- | ---------------- |
-| `a: undefined` → `5`        | `var a = 5;` ✅  |
-| `b: <uninitialized>` → `10` | `let b = 10;` ✅ |
+| Memory                      | Code          |
+| --------------------------- | ------------- |
+| `a: undefined` → `5`        | `var a = 5;`  |
+| `b: <uninitialized>` → `10` | `let b = 10;` |
 
 ---
 
-## 🧠 Not Defined vs Undefined: The Critical Difference
+## Not Defined vs Undefined: The Critical Difference
 
 This is a **crucial interview question** that trips up many developers:
 
@@ -156,14 +156,14 @@ var a = 5;
 
 | Memory                | Code                     |
 | --------------------- | ------------------------ |
-| `a: undefined`        | `var a = 5;` ⏳          |
+| `a: undefined`        | `var a = 5;`             |
 | `b: <does not exist>` | `// b is never declared` |
 
 **Code Execution Phase:**
 
 | Memory                | Code                          |
 | --------------------- | ----------------------------- |
-| `a: undefined` → `5`  | `var a = 5;` ✅               |
+| `a: undefined` → `5`  | `var a = 5;`                  |
 | `b: <does not exist>` | `console.log(b);` → **Error** |
 
 ### The Key Differences:
@@ -175,7 +175,7 @@ var a = 5;
 
 ---
 
-## 🎭 Real-World Example: Function Hoisting in Action
+## Real-World Example: Function Hoisting in Action
 
 Let's see a complex example that demonstrates all hoisting concepts:
 
@@ -207,7 +207,7 @@ var example2 = function () {
 ├─────────────────────────────┤
 │ x: undefined                │
 │ y: <uninitialized> (TDZ)    │
-│ example: function example()  │
+│ example: function example() │
 │ example2: undefined         │
 └─────────────────────────────┘
 ```
@@ -227,7 +227,7 @@ var example2 = function () {
 
 ---
 
-## 🌐 Browser Demo: Call Stack Visualization
+## Browser Demo: Call Stack Visualization
 
 Let's trace through a more complex example in the browser:
 
@@ -255,7 +255,7 @@ outer();
 
 ```
 ┌─────────────────────────────┐
-│ Global EC                    │
+│ Global EC                   │
 ├─────────────────────────────┤
 │ outer: function outer()     │
 └─────────────────────────────┘
@@ -291,13 +291,13 @@ outer();
 
 ---
 
-## ⚡ Interview Tips: Beyond "It Moves Variables Up"
+## Interview Tips: Beyond "It Moves Variables Up"
 
-**❌ Wrong Answer:**
+**Wrong Answer:**
 
 > "Hoisting moves variables to the top of the scope."
 
-**✅ Correct Answer:**
+**Correct Answer:**
 
 > "Hoisting is JavaScript's behavior during the Memory Creation Phase of Execution Context. Variable declarations are hoisted to the top of their scope, but only `var` declarations are initialized with `undefined`. `let` and `const` declarations enter the Temporal Dead Zone until their declaration line is reached."
 
@@ -311,7 +311,7 @@ outer();
 
 ---
 
-## 🎯 Advanced Hoisting Scenarios
+## Advanced Hoisting Scenarios
 
 ### Scenario 1: Block Scope Hoisting
 
@@ -349,7 +349,7 @@ var arrow = () => {
 
 ---
 
-## 📊 Hoisting Summary Table
+## Hoisting Summary Table
 
 | Declaration Type      | Hoisted | Initialized        | TDZ | Example                 |
 | --------------------- | ------- | ------------------ | --- | ----------------------- |
@@ -362,7 +362,7 @@ var arrow = () => {
 
 ---
 
-## ✅ Key Takeaways
+## Key Takeaways
 
 - **Hoisting** happens during the **Memory Creation Phase** of Execution Context
 - Only **declarations** are hoisted, not **initializations**

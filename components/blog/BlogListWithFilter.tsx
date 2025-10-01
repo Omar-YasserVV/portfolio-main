@@ -46,9 +46,9 @@ export function BlogListWithFilter({ posts }: any) {
   }, [posts, selected]);
 
   return (
-    <div className="grid grid-cols-1 md:grid-cols-[220px_1fr] gap-6">
+    <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
       <aside className="md:sticky md:top-24 md:h-[calc(100vh-6rem)]">
-        <nav className="bg-black/60 backdrop-blur-md rounded-xl shadow-lg border border-white/5 p-3 md:p-4 space-y-1">
+        <nav className="bg-black/40 backdrop-blur-md rounded-xl shadow-lg border border-white/5 p-3 md:p-4 space-y-1">
           {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
             const isActive =
               selected === key || (key === "all" && selected === "");
@@ -62,7 +62,13 @@ export function BlogListWithFilter({ posts }: any) {
                     : "text-blue-100 hover:bg-white/5"
                 }`}
               >
-                {label}
+                {label === "JS Fundamentals" ? (
+                  <span>
+                    JS Fundamentals <br /> ( helps with adv topics )
+                  </span>
+                ) : (
+                  label
+                )}
               </button>
             );
           })}
@@ -72,7 +78,7 @@ export function BlogListWithFilter({ posts }: any) {
       <div className="space-y-6">
         {filtered
           .sort((a: any, b: any) =>
-            new Date(a.metadata.publishedAt) > new Date(b.metadata.publishedAt)
+            new Date(a.metadata.publishedAt) < new Date(b.metadata.publishedAt)
               ? -1
               : 1
           )

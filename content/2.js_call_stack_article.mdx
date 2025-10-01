@@ -6,9 +6,7 @@ readTime: "8 min"
 category: "JavaScript fundamentals"
 ---
 
-Let me start with a quick recap of what we learned before:
-
-JavaScript is **synchronous** and **single-threaded** by design. This means it can only execute **one command at a time** and always follows a **strict order** (line by line). Understanding this fundamental nature is crucial because it affects everything from variable declarations to function calls.
+#### Let me start with a quick recap of what we learned before:
 
 **Everything in JavaScript happens inside an Execution Context.**
 
@@ -16,15 +14,13 @@ When you run a program, an **Execution Context is created**. But here's the thin
 
 ---
 
-## 🎯 What is a Stack?
+## What is a Stack?
 
-A **stack** is a simple data structure that works like a stack of plates. You can only:
+A **stack** is a simple data structure that works like a stack of books. You can only **Push** (add) a book to the top of boxes or **Pop** (remove) book from the top The top of boxes you can't randomly take book from middle or bottom of the boxes
 
-- **Push** (add) items to the top
-- **Pop** (remove) items from the top
-- The last item you put in is the first one you take out (**LIFO** - Last In, First Out)
+- you put in is the first one you take out (**LIFO** - Last In, First Out)
 
-## 📚 What is the Call Stack?
+## What is the Call Stack?
 
 The **Call Stack** is JavaScript's way of using a stack to manage execution contexts. JavaScript puts execution contexts on top of each other, and always works with the one on top. When that context finishes, it gets removed, and JavaScript goes back to the one below it.
 
@@ -42,7 +38,7 @@ var answer2 = multiply(8);
 
 ---
 
-## 🏗️ Step 1: Global Execution Context (GEC)
+## Step 1: Global Execution Context (GEC)
 
 When the program starts, JavaScript creates the **Global Execution Context**. This is always at the bottom of the call stack.
 
@@ -57,18 +53,18 @@ When the program starts, JavaScript creates the **Global Execution Context**. Th
 
 **Code Execution Phase:**
 
-| Memory                                 | Code                            |
-| -------------------------------------- | ------------------------------- |
-| `num: 3`                               | `var num = 3;` ✅               |
-| `multiply: function multiply(x) {...}` | `function multiply(x) {...}` ✅ |
-| `answer1: undefined`                   | `var answer1 = multiply(5);` ⏳ |
-| `answer2: undefined`                   | `var answer2 = multiply(8);`    |
+| Memory                                 | Code                         |
+| -------------------------------------- | ---------------------------- |
+| `num: 3`                               | `var num = 3;`               |
+| `multiply: function multiply(x) {...}` | `function multiply(x) {...}` |
+| `answer1: undefined`                   | `var answer1 = multiply(5);` |
+| `answer2: undefined`                   | `var answer2 = multiply(8);` |
 
 When JavaScript reaches `multiply(5)`, it needs to create a **new execution context** for this function call.
 
 ---
 
-## 📚 Step 2: First Function Execution Context
+## Step 2: First Function Execution Context
 
 Now we have **TWO execution contexts**! The call stack looks like this:
 
@@ -82,17 +78,17 @@ Now we have **TWO execution contexts**! The call stack looks like this:
 
 The function `multiply(5)` gets its own execution context:
 
-| Memory                         | Code                            |
-| ------------------------------ | ------------------------------- |
-| **Global EC:**                 |                                 |
-| `num: 3`                       | `var num = 3;` ✅               |
-| `multiply: function {...}`     | `function multiply(x) {...}` ✅ |
-| `answer1: undefined`           | `var answer1 = multiply(5);` ⏳ |
-| `answer2: undefined`           | `var answer2 = multiply(8);`    |
-|                                |                                 |
-| **Function EC (multiply(5)):** |                                 |
-| `x: undefined`                 | **Memory Phase**                |
-| `result: undefined`            |                                 |
+| Memory                         | Code                         |
+| ------------------------------ | ---------------------------- |
+| **Global EC:**                 |                              |
+| `num: 3`                       | `var num = 3;`               |
+| `multiply: function {...}`     | `function multiply(x) {...}` |
+| `answer1: undefined`           | `var answer1 = multiply(5);` |
+| `answer2: undefined`           | `var answer2 = multiply(8);` |
+|                                |                              |
+| **Function EC (multiply(5)):** |                              |
+| `x: undefined`                 | **Memory Phase**             |
+| `result: undefined`            |                              |
 
 Then during code execution:
 
@@ -100,7 +96,7 @@ Then during code execution:
 | ------------------------------ | --------------------- |
 | **Function EC (multiply(5)):** |                       |
 | `x: 5`                         | `var result = x * x;` |
-| `result: 25`                   | `return result;` ✅   |
+| `result: 25`                   | `return result;`      |
 
 When `multiply(5)` finishes and returns `25`:
 
@@ -118,7 +114,7 @@ Call stack now:
 
 ---
 
-## 🔄 Step 3: Second Function Execution Context
+## Step 3: Second Function Execution Context
 
 Now JavaScript continues and hits `multiply(8)`. Again, a **new execution context** is created:
 
@@ -130,17 +126,17 @@ Now JavaScript continues and hits `multiply(8)`. Again, a **new execution contex
 +-----------------------------+
 ```
 
-| Memory                         | Code                            |
-| ------------------------------ | ------------------------------- |
-| **Global EC:**                 |                                 |
-| `num: 3`                       | `var num = 3;` ✅               |
-| `multiply: function {...}`     | `function multiply(x) {...}` ✅ |
-| `answer1: 25`                  | `var answer1 = multiply(5);` ✅ |
-| `answer2: undefined`           | `var answer2 = multiply(8);` ⏳ |
-|                                |                                 |
-| **Function EC (multiply(8)):** |                                 |
-| `x: 8`                         | `var result = x * x;`           |
-| `result: 64`                   | `return result;` ✅             |
+| Memory                         | Code                         |
+| ------------------------------ | ---------------------------- |
+| **Global EC:**                 |                              |
+| `num: 3`                       | `var num = 3;`               |
+| `multiply: function {...}`     | `function multiply(x) {...}` |
+| `answer1: 25`                  | `var answer1 = multiply(5);` |
+| `answer2: undefined`           | `var answer2 = multiply(8);` |
+|                                |                              |
+| **Function EC (multiply(8)):** |                              |
+| `x: 8`                         | `var result = x * x;`        |
+| `result: 64`                   | `return result;`             |
 
 When `multiply(8)` finishes:
 
@@ -150,7 +146,7 @@ When `multiply(8)` finishes:
 
 ---
 
-## 📊 Visual Call Stack Flow
+## Visual Call Stack Flow
 
 Here's how the call stack changes throughout the program:
 
@@ -210,7 +206,7 @@ When the entire program finishes, even the **Global Execution Context gets delet
 
 ---
 
-## 🧠 Key Facts About Call Stack
+## Key Facts About Call Stack
 
 **LIFO Principle**: Call Stack follows **Last In, First Out**. The last function called is the first one to finish and get removed.
 
@@ -222,7 +218,7 @@ When the entire program finishes, even the **Global Execution Context gets delet
 
 ---
 
-## 🔍 Real World Example: Nested Functions
+## Real World Example: Nested Functions
 
 Let's see what happens with nested function calls:
 
@@ -273,7 +269,7 @@ At step 4, the call stack looks like:
 
 ---
 
-## ⚡ Why This Matters
+## Why This Matters
 
 Understanding the call stack explains:
 
