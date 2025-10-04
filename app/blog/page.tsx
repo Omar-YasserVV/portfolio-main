@@ -41,7 +41,9 @@ export default async function BlogPage() {
               </h1>
               <p className="text-blue-100 text-sm md:text-lg max-w-2xl mx-auto mb-3">
                 My thoughts on software development, share knowledge and
-                advanced topics.
+                advanced topics. this topics will translated in to videos in
+                youtube an linkedin to people who love videos more like me and i
+                will do my best there.
               </p>
             </div>
           </BlurFade>

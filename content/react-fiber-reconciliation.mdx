@@ -1,0 +1,430 @@
+---
+title: "React Fiber & Reconciliation: How Modern React Works (Part 2/2)"
+publishedAt: "2025-10-03"
+summary: "Learn how React Fiber solves the blocking problem, how the Fiber tree works, and how modern reconciliation decides what to re-render."
+readTime: "5 min"
+category: "React Internals"
+---
+
+In Part 1, we learned how React's Virtual DOM and diffing algorithm work. But we also saw the critical flaw: **React couldn't pause**. When reconciliation started, it blocked the entire JavaScript thread until finished.
+
+React Fiber (introduced in React 16) completely redesigned how React works internally while keeping the same concepts. Let's understand how.
+
+---
+
+## Fiber Architecture
+
+React Fiber: **break work into small chunks** and pause between them.
+
+**how react fiber works when user press button while rendering Process:**
+
+| Time | What's Happening             | Can User Interact? |
+| ---- | ---------------------------- | ------------------ |
+| 0ms  | Start rendering Header       | Yes                |
+| 5ms  | Pause, check for urgent work | Yes                |
+| 5ms  | User clicks button!          | Handle immediately |
+| 8ms  | Resume rendering Header      | Yes                |
+
+**The magic:** UI stays responsive! High-priority work (clicks) can interrupt low-priority work (rendering).
+
+**Key insight:** Fiber asks "What's more important right now?"
+
+- User clicks → **Immediate priority**
+- Data rendering → **Can wait**
+
+---
+
+## What is a Fiber?
+
+A **Fiber** is a JavaScript object that represents a unit of work that can be paused and resumed.
+
+### Virtual DOM vs Fiber
+
+| Virtual DOM Node (Part 1)       | Fiber Node (Part 2)                                     |
+| ------------------------------- | ------------------------------------------------------- |
+| `{ type: 'div', props: {...} }` | `{ type: 'div', props: {...}, child, sibling, return }` |
+| Simple object representing UI   | Object representing work + tree navigation              |
+| No links to other nodes         | Has links: child, sibling, parent (return)              |
+
+### Fiber Node Structure
+
+```javascript
+{
+  type: 'div',              // Element type
+  props: { ... },           // Props
+  child: FiberNode,         // First child
+  sibling: FiberNode,       // Next sibling
+  return: FiberNode,        // Parent (called "return")
+  alternate: FiberNode,     // Link to other tree
+  effectTag: 'UPDATE',      // What to do (UPDATE, PLACEMENT, DELETION)
+  stateNode: DOMNode        // Actual DOM node
+}
+```
+
+**Key additions:**
+
+- **child, sibling, return**: Navigate the tree efficiently
+- **alternate**: Link to the other tree version
+- **effectTag**: What needs to be done
+
+---
+
+## The Two Trees: Current vs Work-in-Progress
+
+React Fiber maintains **two trees** at the same time:
+
+| Tree Name                  | What It Represents         |
+| -------------------------- | -------------------------- |
+| **Current Tree**           | What's currently on screen |
+| **Work-in-Progress (WIP)** | What React is building     |
+
+### How the Two Trees Work
+
+1. **Clone the Current tree** → Create WIP tree
+2. **Make changes to the WIP tree** → Build the new version
+3. **When done, swap pointers** → WIP becomes Current
+
+```
+Current Tree            Work-in-Progress Tree
+     ↓                           ↓
+┌─────────┐                 ┌─────────┐
+│   App   │ ←── alternate ─→│   App   │
+└─────────┘                 └─────────┘
+```
+
+**The magic:** Every Fiber node has an **alternate** pointer linking to its counterpart in the other tree.
+
+### Why Two Trees?
+
+- **Current Tree**: "This is what the user sees right now"
+- **WIP Tree**: "This is what it should look like after my changes"
+
+---
+
+## How Fiber Tree Navigation Works
+
+Fiber uses **linked lists** for efficient traversal. This makes pausing and resuming possible.
+
+```javascript
+function App() {
+  return (
+    <div>
+      <Header />
+      <Main />
+      <Footer />
+    </div>
+  );
+}
+```
+
+### Fiber Tree Structure
+
+```
+        App
+         ↓ child
+        div
+         ↓ child
+      Header → sibling → Main → sibling → Footer
+```
+
+### Navigation Rules
+
+| Relationship | Direction          | Example           |
+| ------------ | ------------------ | ----------------- |
+| **child**    | Go to first child  | `App` → `div`     |
+| **sibling**  | Go to next sibling | `Header` → `Main` |
+| **return**   | Go back to parent  | `Header` → `div`  |
+
+**The power:** React can pause at any node, handle urgent work, then resume exactly where it left off!
+
+---
+
+## The Reconciliation Process with Fiber
+
+React Fiber splits reconciliation into **two phases**:
+
+| Phase            | Can Pause? | What Happens                      |
+| ---------------- | ---------- | --------------------------------- |
+| **Render Phase** | Yes        | Build WIP tree, mark what changed |
+| **Commit Phase** | No         | Apply changes to real DOM         |
+
+### Phase 1: Render Phase (Interruptible)
+
+React walks the Fiber tree and builds the Work-in-Progress tree. **This is where the magic happens** - React can pause here!
+
+**What gets marked:**
+
+| Effect Tag  | Meaning                  | Example                   |
+| ----------- | ------------------------ | ------------------------- |
+| `UPDATE`    | Update existing DOM node | Props changed             |
+| `PLACEMENT` | Insert new DOM node      | New element added         |
+| `DELETION`  | Remove DOM node          | Element removed from tree |
+
+### Phase 2: Commit Phase (Synchronous)
+
+React applies all the marked changes to the real DOM **in one go**. This phase is fast because React already knows exactly what to do.
+
+```javascript
+Render Phase (can pause):
+┌──────────────────────────────┐
+│ Walk tree                    │ ← Can be interrupted
+│ Compare old vs new           │
+│ Mark changes (effectTag)     │
+└──────────────────────────────┘
+         ↓
+Commit Phase (can't pause):
+┌──────────────────────────────┐
+│ Apply all changes to DOM     │ ← Must finish quickly
+│ Call lifecycle methods       │
+│ WIP becomes Current          │
+└──────────────────────────────┘
+```
+
+**The key insight:** React does all the heavy thinking in the render phase (where it can pause), then does a quick commit (where it can't pause but doesn't need to).
+
+## The Big Idea
+
+React Fiber lets React **pause** while updating your app to handle more important things first. Like pausing a video game to answer an urgent text message.
+
+---
+
+## How React Pauses Work
+
+React checks "Do I have time?" after each small piece of work:
+
+```javascript
+function workLoop() {
+  while (hasWorkToDo && hasTimeLeft) {
+    // Do one small piece of work
+    doWork();
+
+    // Check: Still have time?
+    hasTimeLeft = checkTime();
+  }
+
+  if (hasWorkToDo) {
+    // Pause and resume later
+    pauseAndComeBackLater();
+  } else {
+    // Done! Update the screen
+    updateScreen();
+  }
+}
+```
+
+**The magic:** React does a little work, checks the clock, and pauses if needed.
+
+---
+
+## Priority Levels: What Gets Done First?
+
+| Priority   | Example      | Can Be Interrupted? |
+| ---------- | ------------ | ------------------- |
+| **High**   | User typing  | No                  |
+| **Medium** | Loading data | Yes                 |
+| **Low**    | Analytics    | Yes                 |
+
+### Example: Typing While Loading
+
+```javascript
+function Search() {
+  const [text, setText] = useState("");
+  const [results, setResults] = useState([]);
+
+  return (
+    <>
+      <input value={text} onChange={(e) => setText(e.target.value)} />
+      <Results items={results} />
+    </>
+  );
+}
+```
+
+**What happens:**
+
+1. App starts showing 1000 search results (slow)
+2. User types a letter
+3. React **pauses** the results rendering
+4. Input updates instantly
+5. Results finish rendering after
+
+**The magic:** Typing is never blocked!
+
+---
+
+## When Does a Component Re-render?
+
+React compares old and new values:
+
+| What Changed | Old          | New          | Result             |
+| ------------ | ------------ | ------------ | ------------------ |
+| **Type**     | `<div>`      | `<span>`     | Replace everything |
+| **Type**     | `<div>`      | `<div>`      | Keep it            |
+| **Props**    | `{count: 1}` | `{count: 1}` | Skip render        |
+| **Props**    | `{count: 1}` | `{count: 2}` | Re-render          |
+
+### Example: Parent Updates, Child Doesn't
+
+```javascript
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <Child name="Alice" />
+      <button onClick={() => setCount(count + 1)}>+</button>
+    </div>
+  );
+}
+
+function Child({ name }) {
+  console.log("Child rendered");
+  return <p>Hello {name}</p>;
+}
+```
+
+**When you click the button:**
+
+| Component               | Re-renders? | Why               |
+| ----------------------- | ----------- | ----------------- |
+| `Parent`                | Yes         | State changed     |
+| `<p>Count: {count}</p>` | Yes         | Content changed   |
+| `Child`                 | No          | Props stayed same |
+| `<button>`              | No          | Nothing changed   |
+
+**Why Child doesn't re-render:** The props `{name: "Alice"}` are the same.
+
+---
+
+## Common Mistake: Creating New Objects
+
+```javascript
+//  BAD: Creates new object every time
+function Parent() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <div>
+      <Child user={{ name: "Alice" }} />
+      <button onClick={() => setCount(count + 1)}>+</button>
+    </div>
+  );
+}
+
+//  GOOD: Reuses same object
+function Parent() {
+  const [count, setCount] = useState(0);
+  const user = { name: "Alice" }; // Same object each render
+
+  return (
+    <div>
+      <Child user={user} />
+      <button onClick={() => setCount(count + 1)}>+</button>
+    </div>
+  );
+}
+```
+
+**Why:** React compares objects by reference, not by what's inside them.
+
+---
+
+## How React Compares Props
+
+React uses **shallow comparison** (checks the reference, not the content):
+
+```javascript
+// Numbers, strings, booleans: compared by value
+<Child count={5} />
+<Child count={5} />
+// 5 === 5 → Same
+
+// Objects: compared by reference
+const obj = {name: "Alice"};
+<Child user={obj} />
+<Child user={obj} />
+// Same object → Same
+
+// New objects each time
+<Child user={{name: "Alice"}} />  // New object #1
+<Child user={{name: "Alice"}} />  // New object #2
+// Different objects → Different
+```
+
+| Prop Type | How React Compares       |
+| --------- | ------------------------ |
+| Number    | Value: `5 === 5`         |
+| String    | Value: `"hi" === "hi"`   |
+| Object    | Reference: Same pointer? |
+| Array     | Reference: Same pointer? |
+| Function  | Reference: Same pointer? |
+
+---
+
+## Why Keys Matter
+
+Keys help React know which item is which:
+
+```javascript
+// Without keys - React gets confused
+todos.map((todo) => <Todo todo={todo} />);
+
+// With keys - React knows which is which
+todos.map((todo) => <Todo key={todo.id} todo={todo} />);
+```
+
+**What happens with keys:**
+
+| Action        | Without Key          | With Key             |
+| ------------- | -------------------- | -------------------- |
+| Reorder items | Recreates everything | Moves existing items |
+| State         | Lost                 | Kept                 |
+| Speed         | Slower               | Faster               |
+
+---
+
+## Two Trees: Current and Work-in-Progress
+
+React keeps two versions of your app:
+
+```
+Current Tree          Work-in-Progress Tree
+(On screen now)       (Being built)
+
+    App                    App
+    └── List              └── List
+        ├── Item 1            ├── Item 1 ✏️ (changed)
+        └── Item 2            └── Item 2
+```
+
+**The process:**
+
+1. Build new tree (can pause here)
+2. Mark what changed
+3. Swap trees (fast, can't pause)
+4. Screen updates
+
+---
+
+## Old React vs React Fiber
+
+| Feature             | Before Fiber     | With Fiber         |
+| ------------------- | ---------------- | ------------------ |
+| **Can pause?**      | No               | Yes                |
+| **Updates**         | All at once      | Can interrupt      |
+| **Priority**        | Everything equal | Urgent stuff first |
+| **User experience** | Can freeze       | Stays smooth       |
+
+---
+
+## Key Takeaways
+
+1. **Fiber lets React pause** while updating your app
+2. **Urgent updates (like typing) interrupt slower ones** (like loading data)
+3. **React compares props by reference** (pointer), not by content
+4. **Parent re-renders don't always cause child re-renders** (only if props change)
+5. **Creating new objects causes unnecessary re-renders** (reuse objects when possible)
+6. **Keys help React track items** when they move or change order
+
+**The magic:** React does work in tiny pieces, constantly checking if something more important needs to happen. This keeps your app feeling fast and responsive!

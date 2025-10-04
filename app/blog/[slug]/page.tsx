@@ -155,7 +155,7 @@ export default async function Blog({
                 [&_p]:text-gray-300 [&_p]:leading-relaxed [&_p]:mb-6
                 [&_a]:text-blue-100 [&_a]:no-underline hover:[&_a]:underline [&_a]:font-medium
                 [&_strong]:text-white [&_strong]:font-semibold
-                [&_code]:text-blue-100 [&_code]:bg-white/10 [&_code]:px-2 [&_code]:py-1 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono
+                [&_code]:text-blue-100 [&_code]:bg-white/10 [&_code]:px-2 [&_code]:py-1 [&_code]:rounded [&_code]:text-sm [&_code]:font-mono [&_figure]:mb-4
                 [&_pre]:bg-gray-900 [&_pre]:border [&_pre]:border-gray-700 [&_pre]:rounded-lg [&_pre]:p-4 [&_pre]:overflow-x-auto [&_pre]:text-sm [&_pre]:font-mono [&_pre]:max-w-full [&_pre]:whitespace-pre [&_pre]:scrollbar-thin [&_pre]:scrollbar-track-gray-800 [&_pre]:scrollbar-thumb-gray-600 [&_pre]:hover:scrollbar-thumb-gray-500
                 [&_pre_code]:bg-transparent [&_pre_code]:p-0 [&_pre_code]:text-white [&_pre_code]:block [&_pre_code]:min-w-0 [&_pre_code]:overflow-x-auto
                 [&_blockquote]:border-l-4 [&_blockquote]:border-blue-100 [&_blockquote]:pl-6 [&_blockquote]:italic [&_blockquote]:text-gray-300 [&_blockquote]:bg-white/5 [&_blockquote]:py-4 [&_blockquote]:rounded-r-lg

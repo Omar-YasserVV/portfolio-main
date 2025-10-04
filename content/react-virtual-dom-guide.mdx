@@ -1,0 +1,342 @@
+---
+title: "Understanding React's Virtual DOM: Before Fiber (Part 1/2)"
+publishedAt: "2025-10-02"
+summary: "Learn how React's Virtual DOM works, the diffing algorithm, and reconciliation. Foundation knowledge before diving into Fiber architecture."
+readTime: "4 min"
+category: "React Internals"
+---
+
+Before diving into React Fiber (Part 2), let's understand how React originally worked. We'll start from the basics and build up to why React needed a better solution.
+
+---
+
+## What is the DOM?
+
+The **DOM** is how browsers represent your HTML as a tree structure. Every element is a **node** in this tree.
+
+```html
+<div id="app">
+  <h1>Hello World</h1>
+  <p>Welcome to React</p>
+</div>
+```
+
+Becomes this tree:
+
+```
+div#app
+├── h1 → "Hello World"
+└── p → "Welcome to React"
+```
+
+## The DOM Problem
+
+When you update the DOM:
+
+```javascript
+const heading = document.querySelector("h1");
+heading.textContent = "Hello React";
+```
+
+The browser does expensive work first **Update the node** `medium cost` second **Recalculate layout** for the entire page `expensive` third **Repaint** the screen `expensive`
+
+**Problem:** Update many nodes = repeat these expensive steps for each change.
+
+---
+
+## The Naive Approach
+
+Without React, updating a todo list looks like this:
+
+```javascript
+function updateTodos() {
+  const container = document.getElementById("list");
+  container.innerHTML = ""; // Delete everything
+
+  todos.forEach((todo) => {
+    const div = document.createElement("div");
+    div.textContent = todo.text;
+    container.appendChild(div); // Recreate everything
+  });
+}
+```
+
+**What happens when 1 todo changes:**
+
+`First` Delete all 3 DOM nodes `second` Create 3 new DOM nodes `third` Browser recalculates layout 3 times and this give us **Result:** 9 expensive operations for 1 small change!
+
+This is wasteful - we destroyed and recreated everything when only one item changed.
+
+---
+
+## Enter the Virtual DOM
+
+React's solution: keep a **lightweight copy** of the DOM in JavaScript memory called `Virtual DOM`, Creating and comparing JavaScript objects is **1000x faster** than manipulating the real DOM.
+
+| Real DOM (Heavy)                            | Virtual DOM (Lightweight)                                                                              |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `<div className="box"><h1>Hello</h1></div>` | `{ type: 'div', props: { className: 'box', children: [{ type: 'h1', props: { children: 'Hello' }}] }}` |
+| Actual browser object                       | Plain JavaScript object                                                                                |
+| Expensive to create                         | Very cheap to create                                                                                   |
+| Causes browser recalculation                | No browser work                                                                                        |
+
+---
+
+## How React Works: Three Steps
+
+React follows a simple three-step process:
+
+```
+┌─────────────────┐      ┌─────────────────┐      ┌─────────────────┐
+│   1. RENDER     │  →   │   2. DIFFING    │  →   │   3. COMMIT     │
+│   (Create new   │      │   (Find what    │      │   (Update real  │
+│   Virtual DOM)  │      │    changed)     │      │      DOM)       │
+└─────────────────┘      └─────────────────┘      └─────────────────┘
+     Fast                    Fast                   Slow but minimal
+```
+
+### Step 1: Render
+
+React calls your components and creates a **new Virtual DOM tree** (just JavaScript objects, not real DOM yet).
+
+### Step 2: Diffing
+
+React compares the old and new trees to find what changed:
+
+| Old Virtual DOM        | New Virtual DOM        | React's Decision |
+| ---------------------- | ---------------------- | ---------------- |
+| `<li>Learn React</li>` | `<li>Learn React</li>` | "Same, keep it"  |
+| `<li>Build app</li>`   | `<li>Build app</li>`   | "Same, keep it"  |
+| `<li>Deploy</li>`      | `<li>Deploy now!</li>` | "This changed!"  |
+
+### Step 3: Commit
+
+React updates the real DOM with **only** the changes it found:
+
+```javascript
+// React does this internally:
+document.querySelector('[data-id="3"]').textContent = "Deploy now!";
+// Only 1 DOM operation instead of recreating everything!
+```
+
+**Result:** Instead of destroying and recreating 3 items, React just updates one item. Much faster!
+
+---
+
+## The Diffing Algorithm
+
+Comparing two trees perfectly would be **O(n³)** complexity that's way too slow but React uses smart shortcuts to achieve **O(n)** - linear time:
+
+| Elements | Perfect Comparison | React's Smart Way |
+| -------- | ------------------ | ----------------- |
+| 10       | 1,000              | 10                |
+| 100      | 1,000,000          | 100               |
+| 1,000    | 1,000,000,000      | 1,000             |
+
+### React's Three Rules
+
+#### Rule 1: Different Element Types = Start Over
+
+```javascript
+// Old: <div><Counter /></div>
+// New: <span><Counter /></span>
+```
+
+**React's thinking:** "Different types = rebuild everything."
+
+#### Rule 2: Same Element Type = Just Update Props
+
+```javascript
+// Old: <div className="old" title="Hi" />
+// New: <div className="new" title="Hi" />
+```
+
+**React's thinking:** "Same `<div>`, just update what changed."
+
+#### Rule 3: Keys Help React Track Identity
+
+**Without keys:** React matches by position (gets confused when items move)
+
+```javascript
+// Old: [A, B]     New: [C, A, B]
+// React thinks: "A→C, B→A, new B" (updates all 3!)
+```
+
+**With keys:** React matches by identity (knows items moved)
+
+```javascript
+// Old: [key="a":A, key="b":B]     New: [key="c":C, key="a":A, key="b":B]
+// React thinks: "Move A, move B, add C" (reuses 2, adds 1)
+```
+
+**Result:** Keys make React much more efficient when items move around.
+
+---
+
+## Example: Simple Counter
+
+```javascript
+function App() {
+  const [count, setCount] = useState(0);
+  return (
+    <div>
+      <h1>Count: {count}</h1>
+      <button onClick={() => setCount(count + 1)}>Increment</button>
+    </div>
+  );
+}
+```
+
+**When user clicks button (count: 0 → 1):**
+
+1. **Render:** React creates new Virtual DOM tree
+2. **Diffing:** React compares old vs new trees
+   - `div`: Same → Keep
+   - `h1`: Same → Keep
+   - Text: "Count: 0" → "Count: 1" → **Update this!**
+   - `button`: Same → Keep
+3. **Commit:** React updates only the text: `h1.textContent = "Count: 1"`
+
+**Result:** Only one text node updates, not the entire component!
+
+# keys
+
+Keys are React's way of saying "I know this is the same item, even if it moved." Without them, React gets confused and makes expensive mistakes, and this key must be unique.
+
+## Why Keys Are Critical: The Identity Problem
+
+### The Three Key Strategies (and their results)
+
+| Scenario         | Key Strategy        | What React Thinks     | Result                |
+| ---------------- | ------------------- | --------------------- | --------------------- |
+| No keys          | Compare by position | "Position 0 = Item A" | Updates all items     |
+| Index as key     | Compare by index    | "Index 0 = Item A"    | Loses component state |
+| Unique ID as key | Compare by identity | "ID 1 = Item A"       | Minimal updates       |
+
+### The Index Key Trap
+
+This is the most common mistake developers make:
+
+```javascript
+// BAD: Using array index as key
+{
+  todos.map((todo, index) => <TodoItem key={index} todo={todo} />);
+}
+```
+
+**What goes wrong:** When you insert an item at the beginning, all the indexes shift:
+
+```javascript
+// Before: ["Learn React", "Build app"]
+// Indexes: [0, 1]
+
+// After inserting "Deploy" at start: ["Deploy", "Learn React", "Build app"]
+// Indexes: [0, 1, 2]
+```
+
+**React's confused thinking:**
+
+- "Item at index 0 changed from 'Learn React' to 'Deploy'" → Update
+- "Item at index 1 changed from 'Build app' to 'Learn React'" → Update
+- "New item at index 2: 'Build app'" → Create
+
+**Result:** React updates all 3 items when it only needed to add 1!
+
+### The Right Way: Unique IDs
+
+```javascript
+//  GOOD: Using unique ID as key
+{
+  todos.map((todo) => <TodoItem key={todo.id} todo={todo} />);
+}
+```
+
+**What happens:** React tracks items by their unique ID, not position:
+
+```javascript
+// Before: [{id: 1, text: "Learn React"}, {id: 2, text: "Build app"}]
+// After: [{id: 3, text: "Deploy"}, {id: 1, text: "Learn React"}, {id: 2, text: "Build app"}]
+```
+
+**React's smart thinking:**
+
+- "ID 1 moved from position 0 to 1" → Move existing item
+- "ID 2 moved from position 1 to 2" → Move existing item
+- "New ID 3 at position 0" → Create new item
+
+**Result:** React reuses 2 existing items and only creates 1 new one. Much more efficient!
+
+---
+
+## The Fatal Flaw: React Couldn't Pause
+
+The original React had one critical problem that made it unsuitable for complex apps:
+
+**Once reconciliation started, React had to finish the entire tree without stopping.**
+
+### The Problem in Action
+
+Imagine a complex app with lots of components:
+
+```javascript
+function App() {
+  return (
+    <div>
+      <Header /> {/* 1000 nodes */}
+      <Sidebar /> {/* 500 nodes */}
+      <MainContent /> {/* 5000 nodes */}
+      <Footer /> {/* 200 nodes */}
+    </div>
+  );
+}
+```
+
+**What happens when state changes:**
+
+| Phase  | What React Does      | Can Pause? | Impact on User |
+| ------ | -------------------- | ---------- | -------------- |
+| Render | Process 6700 nodes   | No         | UI frozen      |
+| Diff   | Compare 6700 nodes   | No         | UI frozen      |
+| Commit | Update changed nodes | No         | UI frozen      |
+
+### The Real-World Impact
+
+**If this takes 100ms:**
+
+- JavaScript is completely blocked for 100ms
+- User clicks don't respond
+- Animations stutter
+- The page feels "frozen"
+
+**Why this matters:** Browsers need to update the screen 60 times per second (every 16ms). If React takes 100ms, that's 6 missed frames = stuttering animation.
+
+---
+
+## What We've Learned: The Virtual DOM Foundation
+
+Let's recap the key concepts that make React work:
+
+| Concept            | What It Is                        | Why It Matters                |
+| ------------------ | --------------------------------- | ----------------------------- |
+| **Real DOM**       | Browser's tree structure          | Expensive to manipulate       |
+| **Virtual DOM**    | JavaScript object copy of DOM     | Cheap to create and compare   |
+| **Diffing**        | Compare old vs new Virtual DOM    | Finds minimal changes needed  |
+| **Reconciliation** | Full update process               | How React updates efficiently |
+| **O(n)**           | One pass through tree             | Fast enough for large apps    |
+| **Keys**           | Track element identity            | Prevents unnecessary updates  |
+| **Blocking**       | Can't pause during reconciliation | Original React's limitation   |
+
+---
+
+## Key Takeaways
+
+- **DOM updates are expensive** → Virtual DOM makes comparison cheap
+- **React uses three phases** → Render → Diff → Commit
+- **Diffing uses three rules** → Achieve O(n) complexity
+- **Keys are critical** → Track element identity across changes
+- **Original React couldn't pause** → Blocking rendering was the fatal flaw
+- **Understanding this foundation** → Essential for learning Fiber
+
+**The Virtual DOM made React predictable and manageable. Fiber made it fast and responsive for complex applications.**
+
+Ready to see how React Fiber solves the blocking problem? Let's dive into Part 2! [Click Here](/blog/react-fiber-reconciliation)
