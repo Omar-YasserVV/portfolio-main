@@ -2,6 +2,8 @@
 
 import { cn } from "@/lib/utils";
 import React, { useEffect, useState } from "react";
+import Image from "next/image";
+import { isLowPerformanceDevice } from "@/lib/mobileOptimizations";
 
 export const InfiniteMovingCards = ({
   items,
@@ -24,19 +26,35 @@ export const InfiniteMovingCards = ({
   const scrollerRef = React.useRef<HTMLUListElement>(null);
 
   useEffect(() => {
-    addAnimation();
+    // Delay animation start on low performance devices to reduce initial load impact
+    const delay = isLowPerformanceDevice() ? 500 : 0;
+
+    const timer = setTimeout(() => {
+      addAnimation();
+    }, delay);
+
+    return () => clearTimeout(timer);
   }, []);
   const [start, setStart] = useState(false);
   function addAnimation() {
     if (containerRef.current && scrollerRef.current) {
       const scrollerContent = Array.from(scrollerRef.current.children);
 
-      scrollerContent.forEach((item) => {
-        const duplicatedItem = item.cloneNode(true);
-        if (scrollerRef.current) {
-          scrollerRef.current.appendChild(duplicatedItem);
+      // Reduce the number of duplicated items on low performance devices
+      const isLowPerf = isLowPerformanceDevice();
+      const duplicateCount = isLowPerf ? 1 : 2;
+
+      // Only duplicate items if we need to
+      if (scrollerContent.length < 10) {
+        for (let i = 0; i < duplicateCount; i++) {
+          scrollerContent?.forEach((item) => {
+            const duplicatedItem = item.cloneNode(true);
+            if (scrollerRef.current) {
+              scrollerRef.current.appendChild(duplicatedItem);
+            }
+          });
         }
-      });
+      }
 
       getDirection();
       getSpeed();
@@ -60,12 +78,24 @@ export const InfiniteMovingCards = ({
   };
   const getSpeed = () => {
     if (containerRef.current) {
+      // Check if it's a low performance device and adjust animation speed
+      const performanceFactor = isLowPerformanceDevice() ? 1.5 : 1;
+
       if (speed === "fast") {
-        containerRef.current.style.setProperty("--animation-duration", "20s");
+        containerRef.current.style.setProperty(
+          "--animation-duration",
+          `${20 * performanceFactor}s`
+        );
       } else if (speed === "normal") {
-        containerRef.current.style.setProperty("--animation-duration", "40s");
+        containerRef.current.style.setProperty(
+          "--animation-duration",
+          `${40 * performanceFactor}s`
+        );
       } else {
-        containerRef.current.style.setProperty("--animation-duration", "80s");
+        containerRef.current.style.setProperty(
+          "--animation-duration",
+          `${80 * performanceFactor}s`
+        );
       }
     }
   };
@@ -116,7 +146,12 @@ export const InfiniteMovingCards = ({
               <div className="relative z-20 mt-6 flex flex-row items-center">
                 {/* add this div for the profile img */}
                 <div className="me-3">
-                  <img src="/profile.svg" alt="profile" />
+                  <Image
+                    src="/profile.svg"
+                    alt="profile"
+                    width={40}
+                    height={40}
+                  />
                 </div>
                 <span className="flex flex-col gap-1">
                   {/* change text color, font-normal to font-bold, text-xl */}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-
+import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "./provider";
 
@@ -14,44 +14,79 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Omar Yasser's Portfolio",
+  metadataBase: new URL("https://omar-yassser.vercel.app"),
+  title: {
+    default: "Omar Yasser | Full-Stack Developer",
+    template: "%s | Omar Yasser",
+  },
   description:
-    "Full-stack developer portfolio showcasing modern web development skills and projects",
+    "Explore Omar Yasser's portfolio — a creative full-stack developer skilled in React, Next.js, Node.js, and performance optimization.",
   keywords: [
-    "developer",
-    "portfolio",
-    "full-stack",
-    "react",
-    "next.js",
-    "typescript",
+    "Omar Yasser",
+    "Full-Stack Developer",
+    "React",
+    "Next.js",
+    "Node.js",
+    "TypeScript",
+    "Web Developer Portfolio",
+    "Frontend Developer",
+    "Backend Developer",
   ],
-  authors: [{ name: "Omar Yasser" }],
+  authors: [{ name: "Omar Yasser", url: "https://omar-yassser.vercel.app" }],
   creator: "Omar Yasser",
+  publisher: "Omar Yasser",
   openGraph: {
-    title: "Omar Yasser's Portfolio",
-    description: "Full-stack developer portfolio",
+    title: "Omar Yasser | Full-Stack Developer",
+    description:
+      "Creative full-stack developer specializing in modern, high-performance web apps.",
+    url: "https://omar-yassser.vercel.app",
+    siteName: "Omar Yasser",
+    locale: "en_US",
     type: "website",
+    images: [
+      {
+        url: "/og-image.jpg",
+        width: 1200,
+        height: 630,
+        alt: "Omar Yasser Portfolio Preview",
+      },
+    ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "Omar Yasser's Portfolio",
-    description: "Full-stack developer portfolio",
+    title: "Omar Yasser | Full-Stack Developer",
+    description:
+      "Creative full-stack developer building fast and accessible web apps.",
+    creator: "@OmarYasser", // Add your Twitter handle if you have one
+    images: ["/og-image.jpg"],
   },
   robots: {
     index: true,
     follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      "max-snippet": -1,
+      "max-image-preview": "large",
+      "max-video-preview": -1,
+    },
+  },
+  alternates: {
+    canonical: "https://omar-yassser.vercel.app",
   },
   viewport: {
     width: "device-width",
     initialScale: 1,
   },
+  category: "Portfolio",
+  applicationName: "Omar Yasser Portfolio",
 };
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
@@ -67,6 +102,27 @@ export default function RootLayout({
           crossOrigin="anonymous"
         />
         <meta name="theme-color" content="#000319" />
+        <link rel="preload" as="image" href="/og-image.jpg" />
+        <Script
+          id="structured-data"
+          type="application/ld+json"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: JSON.stringify({
+              "@context": "https://schema.org",
+              "@type": "Person",
+              name: "Omar Yasser",
+              url: "https://omar-yassser.vercel.app",
+              jobTitle: "Full-Stack Developer",
+              description:
+                "Creative full-stack developer skilled in React, Next.js, and Node.js.",
+              sameAs: [
+                "https://www.linkedin.com/in/omaryasser",
+                "https://github.com/omaryasser",
+              ],
+            }),
+          }}
+        />
       </head>
       <body className={inter.className}>
         <ThemeProvider
