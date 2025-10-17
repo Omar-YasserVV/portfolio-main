@@ -1,10 +1,9 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import Script from "next/script";
 import "./globals.css";
 import { ThemeProvider } from "./provider";
 
-// Optimized font loading
 const inter = Inter({
   subsets: ["latin"],
   display: "swap",
@@ -12,6 +11,14 @@ const inter = Inter({
   fallback: ["system-ui", "arial"],
   variable: "--font-inter",
 });
+
+// ✅ Fix: define viewport separately
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+  themeColor: "#000319",
+};
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://omar-yassser.vercel.app"),
@@ -74,10 +81,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: "https://omar-yassser.vercel.app",
   },
-  viewport: {
-    width: "device-width",
-    initialScale: 1,
-  },
   category: "Portfolio",
   applicationName: "Omar Yasser Portfolio",
 };
@@ -101,7 +104,6 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        <meta name="theme-color" content="#000319" />
         <link rel="preload" as="image" href="/og-image.jpg" />
         <Script
           id="structured-data"
