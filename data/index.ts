@@ -75,7 +75,7 @@ export const projects = [
   {
     id: 1,
     title: "Movie App - React Native",
-    des: "App ranking and displaying movies using The Movie Database API using React Native. with Zustant and ReactQuery.",
+    des: "App ranking and displaying movies using The Movie Database API using React Native. with Zustand and ReactQuery.",
     img: "/mobile.png",
     iconLists: ["/re.svg", "/tail.svg", "/ts.svg", "/Expo.svg"],
     link: "https://github.com/Omar-YasserVV/om_movie_app",
@@ -93,6 +93,20 @@ export const projects = [
       "/Zustand.svg",
     ],
     link: "https://github.com/Dev-Abdelrhman/Task-Management",
+  },
+  {
+    id: 3,
+    title: "Task Management - internship Project (Team lead)",
+    des: " A task management app built with React.js, Tailwind CSS, It features user authentication, task creation, and real-time updates.",
+    img: "/Orderaa.png",
+    iconLists: [
+      "/next.svg",
+      "/tail.svg",
+      "/ts.svg",
+      "/reactQuery.png",
+      "/Zustand.svg",
+    ],
+    // link: "#",
   },
 ];
 
@@ -170,13 +184,13 @@ export const workExperience = [
     className: "md:col-span-2",
     thumbnail: "/exp1.svg",
   },
-  // {
-  //   id: 2,
-  //   title: "Mobile App Dev - JSM Tech",
-  //   desc: "Designed and developed mobile app for both iOS & Android platforms using React Native.",
-  //   className: "md:col-span-2", // change to md:col-span-2
-  //   thumbnail: "/exp2.svg",
-  // },
+  {
+    id: 2,
+    title: "Front-End Developer - Orderaa",
+    desc: "Developed 15+ responsive UI components for an ERP system MVP, improving page load time by 30% using Next.js and TypeScript in a startup environment.",
+    className: "md:col-span-2",
+    thumbnail: "/exp2.svg",
+  },
   {
     id: 3,
     title: "Full Stack instructor in CFA Academy",
