@@ -52,7 +52,7 @@ export const metadata: Metadata = {
     type: "website",
     images: [
       {
-        url: "/og-image.jpg",
+        url: "/generated_image.png",
         width: 1200,
         height: 630,
         alt: "Omar Yasser Portfolio Preview",
@@ -65,7 +65,7 @@ export const metadata: Metadata = {
     description:
       "Creative full-stack developer building fast and accessible web apps.",
     creator: "@OmarYasser", // Add your Twitter handle if you have one
-    images: ["/og-image.jpg"],
+    images: ["/generated_image.png"],
   },
   robots: {
     index: true,
@@ -104,7 +104,7 @@ export default function RootLayout({
           href="https://fonts.gstatic.com"
           crossOrigin="anonymous"
         />
-        <link rel="preload" as="image" href="/og-image.jpg" />
+        <link rel="preload" as="image" href="/generated_image.png" />
         <Script
           id="structured-data"
           type="application/ld+json"

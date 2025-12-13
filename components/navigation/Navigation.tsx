@@ -42,6 +42,16 @@ const NAVIGATION_CONFIG = {
         link: "/blog",
         icon: <IconArticle className="h-4 w-4" />,
       },
+      {
+        name: "LinkedIn",
+        link: "https://www.linkedin.com/in/omaryvsser",
+        icon: <IconArticle className="h-4 w-4" />,
+      },
+      {
+        name: "GitHub",
+        link: "www.github.com/Omar-YasserVV",
+        icon: <IconArticle className="h-4 w-4" />,
+      },
     ],
     desktop: [
       {
