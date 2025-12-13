@@ -20,6 +20,7 @@ import {
   IconUser,
   IconArticle,
 } from "@tabler/icons-react";
+import { Github, Linkedin } from "lucide-react";
 
 // Navigation configuration
 const NAVIGATION_CONFIG = {
@@ -45,12 +46,12 @@ const NAVIGATION_CONFIG = {
       {
         name: "LinkedIn",
         link: "https://www.linkedin.com/in/omaryvsser",
-        icon: <IconArticle className="h-4 w-4" />,
+        icon: <Linkedin className="h-4 w-4" />,
       },
       {
         name: "GitHub",
         link: "www.github.com/Omar-YasserVV",
-        icon: <IconArticle className="h-4 w-4" />,
+        icon: <Github className="h-4 w-4" />,
       },
     ],
     desktop: [
@@ -245,12 +246,14 @@ const MobileNav = ({
             key={`link-${idx}`}
             href={navItem.link}
             className={cn(
-              "relative dark:text-neutral-50 items-center flex space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
+              "relative dark:text-neutral-50 items-center flex sm:space-x-1 text-neutral-600 dark:hover:text-neutral-300 hover:text-neutral-500"
             )}
             onClick={(e) => handleClick(navItem, e)}
           >
-            <span className="block sm:hidden">{navItem.icon}</span>
-            <span className="text-sm !cursor-pointer">{navItem.name}</span>
+            <span className="sm:block hidden">{navItem.icon}</span>
+            <span className="text-xs sm:text-sm !cursor-pointer">
+              {navItem.name}
+            </span>
           </Link>
         ))}
       </motion.div>
