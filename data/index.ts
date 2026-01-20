@@ -106,7 +106,7 @@ export const projects = [
       "/reactQuery.png",
       "/Zustand.svg",
     ],
-    // link: "#",
+    link: "https://www.orderaa.com/",
   },
 ];
 
