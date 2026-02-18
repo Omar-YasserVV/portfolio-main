@@ -7,13 +7,17 @@ import { isLowPerformanceDevice } from "@/lib/mobileOptimizations";
 export const TextGenerateEffect = ({
   words,
   className,
+  animate: animateProp = true,
 }: {
   words: string;
   className?: string;
+  animate?: boolean;
 }) => {
   const [scope, animate] = useAnimate();
-  let wordsArray = words.split(" ");
+  const wordsArray = words.split(" ");
+  const enableAnimation = animateProp && !isLowPerformanceDevice();
   useEffect(() => {
+    if (!enableAnimation) return;
     animate(
       "span",
       {
@@ -24,9 +28,29 @@ export const TextGenerateEffect = ({
         delay: stagger(0.2),
       }
     );
-  }, [scope.current]);
+  }, [animate, enableAnimation]);
 
   const renderWords = () => {
+    if (!enableAnimation) {
+      return (
+        <div>
+          {wordsArray.map((word, idx) => {
+            return (
+              <span
+                key={word + idx}
+                // change here if idx is greater than 3, change the text color to #CBACF9
+                className={` ${
+                  idx > 3 ? "text-purple" : "dark:text-white text-black"
+                }`}
+              >
+                {word}{" "}
+              </span>
+            );
+          })}
+        </div>
+      );
+    }
+
     return (
       <motion.div ref={scope}>
         {wordsArray.map((word, idx) => {

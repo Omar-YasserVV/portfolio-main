@@ -30,7 +30,15 @@ export default function SnowFall() {
       }
     };
 
-    loadSnowEffect();
+    // Defer loading to idle time to avoid jank on first paint.
+    // This is especially important because the effect is global + always-on.
+    const w = window as any;
+    if (typeof w.requestIdleCallback === "function") {
+      w.requestIdleCallback(() => loadSnowEffect(), { timeout: 2000 });
+    } else {
+      const t = window.setTimeout(() => loadSnowEffect(), 1200);
+      return () => window.clearTimeout(t);
+    }
   }, []);
 
   // Use the web component with attributes
@@ -42,7 +50,7 @@ export default function SnowFall() {
     <>
       <div className="max-md:hidden">
         <snow-effect
-          flakes={150}
+          flakes={90}
           color="#ffffff"
           speed={1}
           style={{
@@ -58,9 +66,9 @@ export default function SnowFall() {
       </div>
       <div className="md:hidden">
         <snow-effect
-          flakes={20}
+          flakes={25}
           color="#ffffff"
-          speed={0.7}
+          speed={1}
           style={{
             position: "fixed",
             top: 0,
