@@ -10,13 +10,19 @@ const Hero = () => {
       <div>
         <Spotlight
           className="-top-40 -left-10 md:-left-32 md:-top-20 h-screen"
-          fill="white"
+          // Using a soft silver/blue-white for a more "atmospheric" look
+          fill="rgba(219, 234, 254, 0.5)"
         />
         <Spotlight
           className="h-[80vh] w-[50vw] top-10 left-full"
-          fill="purple"
+          // Using a vibrant Electric Indigo to match your brand
+          fill="rgba(219, 234, 254, 0.5)"
         />
-        <Spotlight className="left-80 top-28 h-[80vh] w-[50vw]" fill="blue" />
+        <Spotlight
+          className="left-80 top-28 h-[80vh] w-[50vw]"
+          // Using a deep Cyan/Blue to create contrast
+          fill="rgba(219, 234, 254, 0.5)"
+        />
       </div>
 
       <div
@@ -56,6 +62,7 @@ const Hero = () => {
               title="Download CV"
               icon={<FaLocationArrow />}
               position="right"
+              otherClasses="!bg-[#020202]" // Update this to match!
             />
           </a>
         </div>

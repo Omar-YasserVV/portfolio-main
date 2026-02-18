@@ -27,53 +27,48 @@ const config = {
     },
     extend: {
       colors: {
+        // Ultra-dark neutrals for depth
         black: {
-          DEFAULT: "#000",
-          100: "#000319",
-          200: "rgba(17, 25, 40, 0.75)",
-          300: "rgba(255, 255, 255, 0.125)",
+          DEFAULT: "#020202", // Near-perfect black for OLED screens
+          100: "#0A0A0A", // Subtle elevation for Cards
+          200: "#171717", // Border/Stroke color
+          300: "rgba(23, 23, 23, 0.5)",
         },
+        // High-contrast typography
         white: {
-          DEFAULT: "#FFF",
-          100: "#BEC1DD",
-          200: "#C1C2D3",
+          DEFAULT: "#FFFFFF", // Crisp white for headings
+          100: "#A3A3A3", // Dimmed gray for meta-text/dates
+          200: "#737373", // Very muted for placeholders
         },
+        // Neon Accents (Pick one as your primary)
         blue: {
-          "100": "#E4ECFF",
+          100: "#D1E9FF",
+          500: "#3B82F6", // Professional Blue
         },
-        purple: "#CBACF9",
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        purple: "#6B46C1", // "Cyber" Purple
+        emerald: "#10B981", // High-visibility Green
+
+        // Shadcn/UI compatible variables for the "Void" theme
+        border: "hsl(0 0% 14.9%)",
+        input: "hsl(0 0% 14.9%)",
+        ring: "hsl(0 0% 83.1%)",
+        background: "#020202",
+        foreground: "#FAFAFA",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "#FAFAFA", // White text/buttons on black background
+          foreground: "#020202",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "#171717",
+          foreground: "#FAFAFA",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "#171717",
+          foreground: "#A3A3A3",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "#262626",
+          foreground: "#FAFAFA",
         },
       },
       borderRadius: {
@@ -170,21 +165,24 @@ const config = {
         {
           "bg-grid": (value: any) => ({
             backgroundImage: `url("${svgToDataUri(
-              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="100" height="100" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`
+              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="100" height="100" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`,
             )}")`,
           }),
           "bg-grid-small": (value: any) => ({
             backgroundImage: `url("${svgToDataUri(
-              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="8" height="8" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`
+              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="8" height="8" fill="none" stroke="${value}"><path d="M0 .5H31.5V32"/></svg>`,
             )}")`,
           }),
           "bg-dot": (value: any) => ({
             backgroundImage: `url("${svgToDataUri(
-              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="none"><circle fill="${value}" id="pattern-circle" cx="10" cy="10" r="1.6257413380501518"></circle></svg>`
+              `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" width="16" height="16" fill="none"><circle fill="${value}" id="pattern-circle" cx="10" cy="10" r="1.6257413380501518"></circle></svg>`,
             )}")`,
           }),
         },
-        { values: flattenColorPalette(theme("backgroundColor")), type: "color" }
+        {
+          values: flattenColorPalette(theme("backgroundColor")),
+          type: "color",
+        },
       );
     },
   ],
@@ -193,7 +191,7 @@ const config = {
 function addVariablesForColors({ addBase, theme }: any) {
   let allColors = flattenColorPalette(theme("colors"));
   let newVars = Object.fromEntries(
-    Object.entries(allColors).map(([key, val]) => [`--${key}`, val])
+    Object.entries(allColors).map(([key, val]) => [`--${key}`, val]),
   );
 
   addBase({

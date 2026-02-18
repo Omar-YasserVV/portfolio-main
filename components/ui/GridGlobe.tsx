@@ -10,15 +10,15 @@ const World = dynamic(() => import("./Globe").then((m) => m.World), {
 const GridGlobe = () => {
   const globeConfig = {
     pointSize: 4,
-    globeColor: "#062056",
+    globeColor: "#101010", // Slightly lighter than pure black so it's visible
     showAtmosphere: true,
-    atmosphereColor: "#FFFFFF",
-    atmosphereAltitude: 0.1,
-    emissive: "#062056",
-    emissiveIntensity: 0.1,
+    atmosphereColor: "#FFFFFF", // White atmosphere for that high-contrast edge
+    atmosphereAltitude: 0.15, // Slightly higher for better visibility
+    emissive: "#101010", // Give it a tiny bit of internal presence
+    emissiveIntensity: 0.5, // Increased from 0.1
     shininess: 0.9,
-    polygonColor: "rgba(255,255,255,0.7)",
-    ambientLight: "#38bdf8",
+    polygonColor: "rgba(255,255,255,0.7)", // Brighten the landmass dots
+    ambientLight: "#ffffff",
     directionalLeftLight: "#ffffff",
     directionalTopLight: "#ffffff",
     pointLight: "#ffffff",
@@ -423,7 +423,7 @@ const GridGlobe = () => {
             don&apos;t forget to share it.
           </p>
         </motion.div> */}
-        <div className="absolute w-full bottom-0 inset-x-0 h-40 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-black to-white z-40" />
+        <div className="absolute w-full bottom-0 inset-x-0 h-28 bg-gradient-to-b pointer-events-none select-none from-transparent dark:to-[#020202] to-white z-40" />
         {/* remove -bottom-20 */}
         <div className="absolute w-full h-72 md:h-full z-10">
           <World data={sampleArcs} globeConfig={globeConfig} />
