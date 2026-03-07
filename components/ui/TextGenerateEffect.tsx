@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { motion, stagger, useAnimate } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { isLowPerformanceDevice } from "@/lib/mobileOptimizations";
-
+//TODO: remove later
 export const TextGenerateEffect = ({
   words,
   className,
@@ -26,7 +26,7 @@ export const TextGenerateEffect = ({
       {
         duration: 2,
         delay: stagger(0.2),
-      }
+      },
     );
   }, [animate, enableAnimation]);
 
