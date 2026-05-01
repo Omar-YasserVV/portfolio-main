@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import dynamic from "next/dynamic";
 import { Navigation } from "@/components/navigation/Navigation";
+import Spinner from "@/components/ui/Spinner";
 
 // Dynamically import components with loading states and intersection observer
 const Hero = dynamic(() => import("@/components/content/Hero"), {
@@ -35,7 +36,7 @@ const RecentProjects = dynamic(
   {
     ssr: false,
     loading: () => <div className="h-96 bg-black-100" />,
-  }
+  },
 );
 
 // Intersection Observer Hook
@@ -52,7 +53,7 @@ const useIntersectionObserver = (options = {}) => {
         setHasIntersected(true);
       }
     },
-    [hasIntersected]
+    [hasIntersected],
   );
 
   useEffect(() => {
@@ -127,7 +128,7 @@ const Home = () => {
     return (
       <main className="relative bg-black-100 flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5 min-h-screen">
         <div className="max-w-7xl w-full flex items-center justify-center">
-          <div className="text-white text-xl">Loading...</div>
+          <Spinner />
         </div>
       </main>
     );
