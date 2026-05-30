@@ -8,34 +8,34 @@ import Spinner from "@/components/ui/Spinner";
 // Dynamically import components with loading states and intersection observer
 const Hero = dynamic(() => import("@/components/content/Hero"), {
   ssr: false,
-  loading: () => <div className="h-screen bg-black-100" />,
+  loading: () => <div className="h-screen bg-background" />,
 });
 
 const Grid = dynamic(() => import("@/components/content/Grid"), {
   ssr: false,
-  loading: () => <div className="h-96 bg-black-100" />,
+  loading: () => <div className="h-96 bg-background" />,
 });
 
 const Footer = dynamic(() => import("@/components/layout/Footer"), {
   ssr: false,
-  loading: () => <div className="h-64 bg-black-100" />,
+  loading: () => <div className="h-64 bg-background" />,
 });
 
 const Approach = dynamic(() => import("@/components/content/Approach"), {
   ssr: false,
-  loading: () => <div className="h-96 bg-black-100" />,
+  loading: () => <div className="h-96 bg-background" />,
 });
 
 const Experience = dynamic(() => import("@/components/content/Experience"), {
   ssr: false,
-  loading: () => <div className="h-96 bg-black-100" />,
+  loading: () => <div className="h-96 bg-background" />,
 });
 
 const RecentProjects = dynamic(
   () => import("@/components/content/RecentProjects"),
   {
     ssr: false,
-    loading: () => <div className="h-96 bg-black-100" />,
+    loading: () => <div className="h-96 bg-background" />,
   },
 );
 
@@ -126,7 +126,7 @@ const Home = () => {
   // Show loading state during SSR
   if (!isClient) {
     return (
-      <main className="relative bg-black-100 flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5 min-h-screen">
+      <main className="relative bg-background flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5 min-h-screen">
         <div className="max-w-7xl w-full flex items-center justify-center">
           <Spinner />
         </div>
@@ -135,7 +135,7 @@ const Home = () => {
   }
 
   return (
-    <main className="relative bg-black-100 flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5">
+    <main className="relative bg-background flex justify-center items-center flex-col overflow-hidden mx-auto sm:px-10 px-5">
       <div className="max-w-7xl w-full">
         <div ref={heroRef as React.RefObject<HTMLDivElement>}>
           {loadedComponents.hero && <Hero />}

@@ -48,7 +48,7 @@ export function BlogListWithFilter({ posts }: any) {
   return (
     <div className="grid grid-cols-1 md:grid-cols-[300px_1fr] gap-6">
       <aside className="md:sticky md:top-24 md:h-[calc(100vh-6rem)]">
-        <nav className="bg-black/40 backdrop-blur-md rounded-xl shadow-lg border border-white/5 p-3 md:p-4 space-y-1">
+        <nav className="dark:bg-secondary/40 backdrop-blur-md rounded-xl shadow-lg border border-white/5 p-3 md:p-4 space-y-1">
           {Object.entries(CATEGORY_LABELS).map(([key, label]) => {
             const isActive =
               selected === key || (key === "all" && selected === "");
@@ -80,7 +80,7 @@ export function BlogListWithFilter({ posts }: any) {
           .sort((a: any, b: any) =>
             new Date(a.metadata.publishedAt) < new Date(b.metadata.publishedAt)
               ? -1
-              : 1
+              : 1,
           )
           .map((post: any, id: any) => (
             <PostCard

@@ -1,21 +1,22 @@
-/* Critical CSS for above-the-fold content */
+/* Core Tailwind v3 Directives */
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @import "tw-animate-css";
 
-@custom-variant dark (&:is(.dark *));
-/* Performance optimizations */
+/* =========================================
+   Performance Optimizations & Globals
+   ========================================= */
 * {
   box-sizing: border-box;
 }
 
 html {
   scroll-behavior: smooth;
-  scroll-padding-bottom: 120px;
+  scroll-padding-bottom: 120px; /* Account for floating dock at bottom */
 }
 
-/* Optimize animations */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -26,113 +27,122 @@ html {
   }
 }
 
-/* Optimize images */
 img {
   max-width: 100%;
   height: auto;
   display: block;
 }
 
-/* Optimize fonts */
 .font-sans {
   font-display: swap;
 }
 
+/* =========================================
+   Theme Variables & Base Layer
+   ========================================= */
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 240 10% 3.9%;
-
-    --card: 0 0% 100%;
-    --card-foreground: 240 10% 3.9%;
-
-    --popover: 0 0% 100%;
-    --popover-foreground: 240 10% 3.9%;
-
-    --primary: 240 5.9% 10%;
-    --primary-foreground: 0 0% 98%;
-
-    --secondary: 240 4.8% 95.9%;
-    --secondary-foreground: 240 5.9% 10%;
-
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
-
-    --accent: 240 4.8% 95.9%;
-    --accent-foreground: 240 5.9% 10%;
-
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 5.9% 90%;
-    --input: 240 5.9% 90%;
-    --ring: 240 10% 3.9%;
-
-    --radius: 0.5rem;
+    --background: oklch(1 0 0);
+    --foreground: oklch(0.145 0 0);
+    --card: oklch(1 0 0);
+    --card-foreground: oklch(0.145 0 0);
+    --popover: oklch(1 0 0);
+    --popover-foreground: oklch(0.145 0 0);
+    --primary: oklch(0.205 0 0);
+    --primary-foreground: oklch(0.985 0 0);
+    --secondary: oklch(0.97 0 0);
+    --secondary-foreground: oklch(0.205 0 0);
+    --muted: oklch(0.97 0 0);
+    --muted-foreground: oklch(0.556 0 0);
+    --accent: oklch(0.97 0 0);
+    --accent-foreground: oklch(0.205 0 0);
+    --destructive: oklch(0.577 0.245 27.325);
+    --destructive-foreground: oklch(0.577 0.245 27.325);
+    --border: oklch(0.922 0 0);
+    --input: oklch(0.922 0 0);
+    --ring: oklch(0.708 0 0);
+    --chart-1: oklch(0.646 0.222 41.116);
+    --chart-2: oklch(0.6 0.118 184.704);
+    --chart-3: oklch(0.398 0.07 227.392);
+    --chart-4: oklch(0.828 0.189 84.429);
+    --chart-5: oklch(0.769 0.188 70.08);
+    --radius: 0.625rem;
+    --sidebar: oklch(0.985 0 0);
+    --sidebar-foreground: oklch(0.145 0 0);
+    --sidebar-primary: oklch(0.205 0 0);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.97 0 0);
+    --sidebar-accent-foreground: oklch(0.205 0 0);
+    --sidebar-border: oklch(0.922 0 0);
+    --sidebar-ring: oklch(0.708 0 0);
   }
 
   .dark {
-    --background: 240 10% 3.9%;
-    --foreground: 0 0% 98%;
-
-    --card: 240 10% 3.9%;
-    --card-foreground: 0 0% 98%;
-
-    --popover: 240 10% 3.9%;
-    --popover-foreground: 0 0% 98%;
-
-    --primary: 0 0% 98%;
-    --primary-foreground: 240 5.9% 10%;
-
-    --secondary: 240 3.7% 15.9%;
-    --secondary-foreground: 0 0% 98%;
-
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
-
-    --accent: 240 3.7% 15.9%;
-    --accent-foreground: 0 0% 98%;
-
-    --destructive: 0 62.8% 30.6%;
-    --destructive-foreground: 0 0% 98%;
-
-    --border: 240 3.7% 15.9%;
-    --input: 240 3.7% 15.9%;
-    --ring: 240 4.9% 83.9%;
+    --background: oklch(0.145 0 0);
+    --foreground: oklch(0.985 0 0);
+    --card: oklch(0.145 0 0);
+    --card-foreground: oklch(0.985 0 0);
+    --popover: oklch(0.145 0 0);
+    --popover-foreground: oklch(0.985 0 0);
+    --primary: oklch(0.985 0 0);
+    --primary-foreground: oklch(0.205 0 0);
+    --secondary: oklch(0.269 0 0);
+    --secondary-foreground: oklch(0.985 0 0);
+    --muted: oklch(0.269 0 0);
+    --muted-foreground: oklch(0.708 0 0);
+    --accent: oklch(0.269 0 0);
+    --accent-foreground: oklch(0.985 0 0);
+    --destructive: oklch(0.396 0.141 25.723);
+    --destructive-foreground: oklch(0.637 0.237 25.331);
+    --border: oklch(0.269 0 0);
+    --input: oklch(0.269 0 0);
+    --ring: oklch(0.439 0 0);
+    --chart-1: oklch(0.488 0.243 264.376);
+    --chart-2: oklch(0.696 0.17 162.48);
+    --chart-3: oklch(0.769 0.188 70.08);
+    --chart-4: oklch(0.627 0.265 303.9);
+    --chart-5: oklch(0.645 0.246 16.439);
+    --sidebar: oklch(0.205 0 0);
+    --sidebar-foreground: oklch(0.985 0 0);
+    --sidebar-primary: oklch(0.488 0.243 264.376);
+    --sidebar-primary-foreground: oklch(0.985 0 0);
+    --sidebar-accent: oklch(0.269 0 0);
+    --sidebar-accent-foreground: oklch(0.985 0 0);
+    --sidebar-border: oklch(0.269 0 0);
+    --sidebar-ring: oklch(0.439 0 0);
   }
-}
 
-@layer base {
   * {
-    @apply border-border !scroll-smooth;
+    @apply border-border outline-ring/50 !scroll-smooth;
   }
+
   body {
     @apply bg-background text-foreground;
   }
+
   button {
     @apply active:outline-none;
   }
 
-  /* Ensure proper scroll behavior for anchor links */
-  html {
-    scroll-behavior: smooth;
-    scroll-padding-bottom: 120px; /* Account for floating dock at bottom */
-  }
-
-  /* Ensure sections have proper spacing from floating dock */
   section {
     scroll-margin-bottom: 120px;
   }
 }
 
+/* =========================================
+   Utility Classes
+   ========================================= */
 @layer utilities {
   .heading {
     @apply font-bold text-4xl md:text-5xl text-center;
   }
 }
 
-/* Blog content styling */
+/* =========================================
+   Component Classes (Blog & Code Blocks)
+   ========================================= */
 @layer components {
+  /* Blog content styling */
   .blog-content {
     @apply text-gray-300 leading-relaxed;
   }
@@ -205,20 +215,20 @@ img {
   .blog-content hr {
     @apply border-white/10 my-8;
   }
-}
 
-/* Beautiful code block styling */
-@layer components {
   /* Base code block styling */
   pre {
     @apply bg-gray-900 border border-gray-700 rounded-lg p-4 overflow-x-auto text-sm font-mono max-w-full;
     background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
     position: relative;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.4),
+    box-shadow:
+      0 10px 25px -5px rgba(0, 0, 0, 0.4),
       0 4px 6px -2px rgba(0, 0, 0, 0.2);
     white-space: pre;
     word-wrap: normal;
     overflow-wrap: normal;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(75, 85, 99, 0.8) rgba(31, 41, 55, 0.5);
   }
 
   /* Custom scrollbar for code blocks */
@@ -239,12 +249,6 @@ img {
 
   pre::-webkit-scrollbar-thumb:hover {
     background: rgba(107, 114, 128, 0.9);
-  }
-
-  /* Firefox scrollbar styling */
-  pre {
-    scrollbar-width: thin;
-    scrollbar-color: rgba(75, 85, 99, 0.8) rgba(31, 41, 55, 0.5);
   }
 
   /* Mobile responsive improvements */
@@ -277,14 +281,17 @@ img {
     background: transparent;
     padding: 0;
     border-radius: 0;
-    font-family: "Fira Code", "Monaco", "Cascadia Code", "Roboto Mono",
-      monospace;
+    font-family:
+      "Fira Code", "Monaco", "Cascadia Code", "Roboto Mono", monospace;
     font-weight: 400;
     line-height: 1.6;
     overflow-x: auto;
     white-space: pre;
     word-wrap: normal;
     overflow-wrap: normal;
+    position: relative;
+    z-index: 1;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
 
   /* Add colorful accent border */
@@ -314,17 +321,5 @@ img {
     );
     border-radius: 6px;
     pointer-events: none;
-  }
-
-  /* Enhanced code styling */
-  pre code {
-    position: relative;
-    z-index: 1;
-    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
-  }
-
-  /* Base code text color */
-  pre code {
-    color: #f1f5f9;
   }
 }

@@ -55,8 +55,8 @@ export const PostCard = ({
   const categories = Array.isArray(category)
     ? category
     : category
-    ? [category]
-    : [];
+      ? [category]
+      : [];
 
   return (
     <Link href={`blog/${slug}`} className="block">
@@ -66,7 +66,7 @@ export const PostCard = ({
           onHoverStart={() => setIsHovered(true)}
           onHoverEnd={() => setIsHovered(false)}
         >
-          <div className="bg-black/40 backdrop-blur-md rounded-xl shadow-lg border border-white/5 p-6  bg-[#1e2f2f]  transition-colors duration-300 hover:bg-muted/35 hover:border-foreground">
+          <div className="bg-accent/10 backdrop-blur-md rounded-xl shadow-lg border border-white/5 p-6 transition-colors duration-300 hover:bg-muted/35 hover:border-foreground">
             <div className="space-y-3">
               <div className="flex items-center gap-3 text-sm">
                 {categories?.map((cat, i) => (

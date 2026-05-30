@@ -17,7 +17,7 @@ export default async function BlogPage() {
   const posts = await getBlogPosts();
 
   return (
-    <main className="relative bg-black-100 flex items-center flex-col overflow-hidden mx-auto sm:px-10 px-5 min-h-screen">
+    <main className="relative bg-background flex items-center flex-col overflow-hidden mx-auto sm:px-10 px-5 min-h-screen">
       <div className="max-w-7xl w-full">
         {/* Spotlight effects to match app theme */}
         <Spotlight
@@ -37,7 +37,7 @@ export default async function BlogPage() {
         />
 
         {/* Radial gradient overlay */}
-        <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-black-100 bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
+        <div className="absolute pointer-events-none inset-0 flex items-center justify-center dark:bg-background bg-white [mask-image:radial-gradient(ellipse_at_center,transparent_20%,black)]" />
 
         <section className="relative z-10 pt-20 pb-20">
           <BlurFade delay={BLUR_FADE_DELAY}>

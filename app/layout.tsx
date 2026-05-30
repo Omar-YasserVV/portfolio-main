@@ -128,7 +128,7 @@ export default function RootLayout({
         />
       </head>
       <body className={inter.className}>
-        <Snow />
+        {/* <Snow /> */}
         <ThemeProvider
           attribute="class"
           defaultTheme="dark"
